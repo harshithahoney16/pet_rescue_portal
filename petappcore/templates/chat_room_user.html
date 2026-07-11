@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chat Room</title>
+
+<style>
+body{
+    background:#fff9f0;
+    font-family:"Segoe UI",sans-serif;
+}
+
+/* WRAPPER */
+.chat-wrapper{
+    max-width:1100px;
+    margin:40px auto;
+    background:white;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    display:flex;
+    height:70vh;
+    overflow:hidden;
+}
+
+/* CHAT MAIN */
+.chat-main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    width:100%;  
+}
+
+/* HEADER */
+.chat-header{
+    padding:18px 24px;
+    background:#ffa500;
+    color:white;
+}
+.chat-header h3{margin:0;font-size:20px}
+
+/* BODY */
+.chat-body{
+    flex:1;
+    padding:20px;
+    background:#fff9f0;
+    overflow-y:auto;
+}
+
+/* MESSAGE */
+.msg{
+    margin-bottom:12px;
+    max-width:65%;
+}
+.msg.me{
+    margin-left:auto;
+    text-align:right;
+}
+.msg span{
+    display:inline-block;
+    padding:10px 14px;
+    border-radius:16px;
+    background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,.12);
+}
+.msg.me span{
+    background:#ffe2b8;
+}
+
+.chat-img{
+    max-width:220px;
+    border-radius:12px;
+    margin-top:6px;
+    display:block;
+}
+.top-bar{
+    height:64px;
+    background:#ffa500;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 28px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.brand{
+    font-size:20px;
+    font-weight:800;
+}
+
+.top-actions{
+    display:flex;
+    gap:14px;
+}
+
+.icon-btn{
+    padding:8px 20px;          /* button shape */
+    border-radius:22px;        /* pill-style */
+    background:white;
+    color:#ffa500;
+    text-decoration:none;
+    font-weight:700;
+    font-size:14px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid white;
+    transition:0.2s ease;
+}
+
+.icon-btn:hover{
+    background:#ffe3b3;
+}
+
+
+.brand{
+    font-size:20px;
+    font-weight:800;
+}
+
+.top-actions{
+    display:flex;
+    gap:14px;
+}
+
+
+
+   
+
+
+/* INPUT */
+.chat-input{
+    padding:10px 14px;
+    background:#fff;
+    border-top:1px solid #eee;
+    display:flex;
+    align-items:center;
+    flex-wrap:nowrap; 
+    gap:10px;
+}
+
+.msg-bar{
+    flex:1;
+    min-width: 0;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#f2f2f2;
+    border-radius:22px;
+    padding:6px 14px;
+      /* 🔥 THIS is the missing rule */
+
+
+}
+
+.msg-bar input{
+    flex:1;
+    border:none;
+    background:transparent;
+    outline:none;
+    font-size:14px;
+    color:#333;
+}
+
+.msg-bar input::placeholder{
+    color:#999;
+}
+
+.img-icon{
+    font-size:20px;
+    cursor:pointer;
+    color:#ff9800;
+}
+
+.send-btn{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:#ffa500;
+    border:none;
+    color:white;
+    flex-shrink:0;
+    font-size:16px;
+    cursor:pointer;
+}
+
+
+
+.send-btn:hover{
+    background:#ff9800;
+}
+
+
+
+
+/* SIDE */
+.chat-side{
+    width:260px;
+    border-left:1px solid #eee;
+    padding:18px;
+    background:#fff;
+}
+.participant{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
+}
+.avatar{
+    width:36px;height:36px;
+    border-radius:50%;
+    background:#ffa500;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+    <div class="top-bar">
+    <div class="brand">🐾 PetSphere</div>
+
+    <div class="top-actions">
+        <!-- ADD NOTIFICATION BUTTON HERE -->
+        
+
+        <!-- ADD BACK BUTTON HERE -->
+        <a href="{% url 'user_chats' %}" class="icon-btn">Go Back</a>
+    </div>
+</div>
+
+
+<div class="chat-wrapper">
+
+    <!-- MAIN CHAT -->
+    <div class="chat-main">
+        <div class="chat-header">
+            <h3>🐾 Pet Chat Room</h3>
+            <small>{{ pet_kind|upper }}-{{ pet.id }} | Request {{ req.id }}</small>
+        </div>
+
+        <div class="chat-body">
+            {% for m in messages %}
+            <div class="msg {% if m.sender.id == request.user.id %}me{% endif %}">
+                <span>
+                    <b>
+    {% if m.sender.is_staff %}
+        Admin1
+    {% else %}
+        {{ m.sender.username }}
+        {% if m.sender == req.requester %}
+            (Requester)
+        {% elif m.sender == reporter %}
+            (Reporter)
+        {% endif %}
+    {% endif %}
+</b>
+
+            {% if m.message %}
+                        <div>{{ m.message }}</div>
+                    {% endif %}
+
+                    {% if m.image %}
+                        <img src="{{ m.image.url }}" class="chat-img">
+                    {% endif %}
+                </span>
+            </div>
+            {% empty %}
+                <p style="text-align:center;color:#888;">No messages yet</p>
+            {% endfor %}
+        </div>
+        
+
+        {% if chatroom.status == "OPEN" %}
+<form method="post" action="{% url 'chat_room' req.id %}" enctype="multipart/form-data" class="chat-input">
+    {% csrf_token %}
+    <div class="msg-bar">
+    <input type="text" name="message" placeholder="Type your message...">
+
+    <label class="image-icon">
+        📷
+        <input type="file" name="image" accept="image/*" hidden>
+    </label>
+</div>
+    <button type="submit" class="send-btn">➤</button>
+</form>
+{% else %}
+<div style="padding:14px;text-align:center;color:#888;border-top:1px solid #eee;">
+    🔒 Chat closed by Admin — read only
+</div>
+{% endif %}
+
+
+    </div>
+
+    <!-- PARTICIPANTS -->
+    <div class="chat-side">
+    <h4>Participants</h4>
+
+    {% for p in participants %}
+    <div class="participant">
+        <div class="avatar">
+            {{ p.user.username|slice:":1"|upper }}
+        </div>
+        <div>
+            <b>
+    {% if p.role == "admin" %}
+        Admin{{ forloop.counter }}
+    {% else %}
+        {{ p.user.username }} ({{ p.role|title }})
+    {% endif %}
+</b>
+
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+</div>
+
+</body>
+</html>

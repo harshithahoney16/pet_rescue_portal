@@ -1,0 +1,258 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block title %}Approved Pet Reports{% endblock %}
+{% block pets_active %}active{% endblock %}
+{% block heading %}Total Pets{% endblock %}
+
+{% block content %}
+
+<style>
+
+.wrapper {
+    background: #fff9f0;
+    padding: 20px;
+}
+.card-box{
+    display:flex;
+    background:white;
+    padding:16px;
+    border-radius:16px;
+    margin:22px auto;
+    box-shadow:0 4px 14px rgba(0,0,0,.06);
+    gap:22px;
+    position:relative;
+    width:1200px;             /* FIXED WIDTH → CLEAN CARD */
+    min-height:180px;
+}
+
+
+.card-box img {
+    width: 260px;
+    height: 300px;
+    border-radius: 14px;
+    object-fit: cover;
+}
+
+.badge-status {
+    position: absolute;
+    right: 40px;
+    top: 30px;
+    font-size: 14px;
+    padding: 10px 22px;
+    border-radius: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+.info {
+    margin-left: 40px;
+    flex: 1;
+    font-size: 17px;
+    line-height: 1.65;
+    color: #222;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom:2px;
+}
+
+.tag-box span {
+    background: #f0eadb;
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 14px;
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+.inline-tags span{
+    font-size:11px;
+    padding:3px 10px;
+}
+
+.row-icon{
+    font-size:14px;
+}
+.row-icon i{
+    font-size:16px;
+}
+
+.status-chip {
+    padding: 8px 18px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.approved-chip {
+    background: #0b9a32;
+    color: white;
+}
+
+.rejected-chip {
+    background: #d10d0d;
+    color: white;
+}
+.tab{
+    padding:10px 22px;
+    background:#f2f2f2;
+    border-radius:10px;
+    font-weight:700;
+    text-decoration:none;
+    color:#333;
+}
+
+.tab.active{
+    background:#ffcc70;
+    color:#3a2a00;
+}
+
+
+.description-text {
+    margin-top: 10px;
+    font-size: 16px;
+}
+
+</style>
+<div style="display:flex; justify-content:flex-end; gap:18px; margin-bottom:25px;">
+
+  <a href="?filter=all"
+     class="tab {% if filter == 'all' %}active{% endif %}">
+     All
+  </a>
+
+  <a href="?filter=lost"
+     class="tab {% if filter == 'lost' %}active{% endif %}">
+     Lost
+  </a>
+
+  <a href="?filter=found"
+     class="tab {% if filter == 'found' %}active{% endif %}">
+     Found
+  </a>
+
+  <a href="?filter=adopted"
+     class="tab {% if filter == 'adopted' %}active{% endif %}">
+     Adoption
+  </a>
+
+</div>
+
+<div class="wrapper">
+
+{% if reports %}
+
+{% for item in reports %}
+<div class="card-box">
+
+    <!-- IMAGE -->
+    <img src="{% if item.pet_image %}{{ item.pet_image.url }}
+             {% elif item.image %}{{ item.image.url }}
+             {% else %}/static/default.jpg{% endif %}">
+
+    <!-- FOUND / LOST badge -->
+    {% if item.display_type == "adopted" %}
+    <div class="badge-status" style="background:#8b5cf6;">
+        ADOPTED
+    </div>
+
+{% elif item.display_type == "found" %}
+    <div class="badge-status" style="background:#007bff;">
+        FOUND
+    </div>
+
+{% else %}
+    <div class="badge-status" style="background:#ff6d3b;">
+        LOST
+    </div>
+{% endif %}
+
+
+
+    <!-- INFO SECTION -->
+    <div class="info">
+
+        <div class="title">
+            {% if item.pet_name %} {{ item.pet_name }}
+            {% else %} {{ item.species }}
+            {% endif %}
+            <span style="color:gray; font-weight:400;">({{ item.breed }})</span>
+        </div>
+        <div style="font-size:15px; font-weight:700; color:#666; margin-bottom:8px;  margin-top:-2px;">
+    Pet ID: #PET{{ item.id }}
+</div>
+
+        <div class="tag-box" style="margin-top:10px;">
+            <span>{{ item.color }}</span>
+            <span>{{ item.age }} yrs</span>
+            <span>{{ item.gender }}</span>
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-speedometer2"></i> <b>Weight:</b> {{ item.weight }} kg
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-heart-pulse"></i> <b>Health:</b> {{ item.health_status }}
+        </div>
+
+        {% if item.vaccinated %}
+        <div class="row-icon">
+            <i class="bi bi-shield-check"></i> <b>Vaccinated:</b> {{ item.vaccinated }}
+        </div>
+        {% endif %}
+
+        <div class="row-icon">
+            <i class="bi bi-calendar"></i>
+            {% if item.lost_date %} {{ item.lost_date }}
+            {% else %} {{ item.found_date }}
+            {% endif %}
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-geo-alt"></i> {{ item.location }}
+            {% if item.location_url %}
+                • <a href="{{ item.location_url }}" target="_blank"
+                     style="color:#0066ff;font-weight:700;">Location URL</a>
+            {% endif %}
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-telephone"></i>
+            {% if item.phone %} {{ item.phone }} {% else %} {{ item.contact_number }} {% endif %}
+            |
+            <i class="bi bi-envelope"></i>
+            {% if item.email %} {{ item.email }} {% else %} {{ item.contact_email }} {% endif %}
+        </div>
+
+        <p class="description-text"><b>Description:</b> {{ item.description }}</p>
+
+        <br>
+
+        <b>Status:</b>
+        {% if item.status == "Approved" %}
+            <span class="status-chip approved-chip">APPROVED</span>
+        {% else %}
+            <span class="status-chip rejected-chip">REJECTED</span>
+        {% endif %}
+
+    </div>
+    
+
+</div>
+
+
+{% endfor %}
+
+{% else %}
+
+<h3 style="text-align:center; margin-top:50px; color:#444;">No Approved Pets</h3>
+
+{% endif %}
+
+</div>
+
+{% endblock %}

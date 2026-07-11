@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>PetSphere</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --background: #fff9f0;
+      --foreground: #5c4633;
+      --primary: #ffa500;
+      --secondary: #fff3d4;
+      --accent: #c78033;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    .animate-fade-in-up { animation: fadeInUp .6s ease-out forwards; }
+    @keyframes fadeInUp { from {opacity:0; transform:translateY(30px);} to{opacity:1; transform:translateY(0);} }
+
+    .animate-fade-in { animation: fadeIn .6s ease-out forwards; }
+    @keyframes fadeIn { from {opacity:0;} to{opacity:1;} }
+
+    /* ===== slider styles (added) ===== */
+    .slider-container {
+      position: relative;
+      width: 100%;
+      height: 550px;
+      overflow: hidden;
+      border-radius: 1.5rem; /* matches rounded-3xl */
+    }
+
+    .slider-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+      opacity: 0;
+      transform: translateX(100%);
+    }
+
+    .slider-image.active {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .slider-image.prev {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+    .pet-touch:active {
+    transform: scale(1.05);
+    transition: transform 0.2s ease;
+}
+/* BACK-BOX UI FOR IMAGE ONLY */
+.image-backbox {
+  position: relative;
+  padding: 18px;
+  background: #ffe1f2;      /* light pink shade (can change if needed) */
+  border-radius: 22px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+  width: fit-content;
+  margin: auto;
+}
+
+.image-backbox img {
+  border-radius: 22px;
+  display:block;
+}
+
+
+    /* ===== end slider styles ===== */
+  </style>
+</head>
+
+<body style="background:var(--background); color:var(--foreground);">
+
+<!-- HEADER -->
+<header class="fixed top-0 left-0 right-0 z-50 animate-fade-in" style="background:var(--primary); opacity:0;">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+
+    <a href="/" class="flex items-center gap-3 text-white font-bold text-2xl">
+      <img src="https://png.pngtree.com/element_our/png/20180926/pets-vector-logo-template-this-cat-and-dog-logo-could-be-png_113815.jpg"
+           class="h-8 w-8 rounded-full"/>
+      PetSphere
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 text-white">
+      <a href="/" class="hover:opacity-80">Home</a>
+      <a href="#about" class="hover:opacity-80">About</a>
+      <a href="#beliefs" class="hover:opacity-80">Beliefs</a>
+      <a href="#contact" class="hover:opacity-80">Contact</a>
+    </nav>
+
+    <a href="/login" class="bg-white text-black px-4 py-2 rounded-lg font-semibold">Login</a>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<section class="pt-32 pb-12 text-center px-4">
+  <h1 class="text-5xl md:text-6xl font-bold mb-6 opacity-0 animate-fade-in-up" style="color:var(--accent); animation-delay:.2s;">
+    Welcome to PetSphere
+  </h1>
+
+  <p class="text-lg md:text-xl mb-8 opacity-0 animate-fade-in-up leading-relaxed" style="animation-delay:.4s;">
+
+
+    Your trusted partner for lost pet recovery, adoption and rescue,  
+where every connection leads to hope, happiness and a forever home. 🐾  
+Together, we ensure every pet feels safe, seen and cared for.  
+Because every life deserves love and a place to belong. 💛
+
+  </p>
+  <a href="/login">
+          <button class="text-xl px-8 py-4 font-bold rounded-lg opacity-0 animate-fade-in-up"
+                  style="background: var(--primary); color: white; animation-delay: 0.6s;">
+            Begin
+          </button>
+        </a>
+
+  
+</section>
+
+<!-- HERO IMAGE (converted to slider, only part changed) -->
+<section class="px-4 py-12">
+  <div class="container mx-auto max-w-[95%] opacity-0 animate-fade-in-up" style="animation-delay:.8s;">
+    <div class="slider-container shadow-xl">
+      <img
+        src="https://www.preventivevet.com/hubfs/puppy%20with%20cat%20600%20canva.jpg"
+        class="slider-image active"
+        alt="Puppy and cat">
+      <img
+        src="https://www.shutterstock.com/shutterstock/videos/1079148731/thumb/1.jpg?ip=x480"
+        class="slider-image"
+        alt="Dog outdoors">
+      <img
+        src="https://media.istockphoto.com/id/1885088154/photo/girl-playing-with-happy-dog-fooling-around-on-floor-at-home.jpg?s=612x612&w=0&k=20&c=CaHFusALfwsUGJZWwG4L1UBIg_u9BtpTfUdj8VlUMfk="
+        class="slider-image"
+        alt="Girl playing with dog">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE CARDS -->
+<section class="py-16 px-4">
+  <div class="container mx-auto max-w-6xl grid grid-cols-1 md:grid-cols-3 gap-6">
+
+    <div class="border-2 rounded-xl p-8 text-center" style="border-color:var(--primary);">
+      <h3 class="text-2xl font-bold mb-4" style="color:var(--accent);">Lost Pet Reporting</h3>
+      <p>Submit a lost-pet report to alert rescuers around you instantly.</p>
+    </div>
+
+    <div class="border-2 rounded-xl p-8 text-center" style="border-color:var(--primary);">
+      <h3 class="text-2xl font-bold mb-4" style="color:var(--accent);">Found Pet Assistance</h3>
+      <p>Found a pet? Upload details so rightful owners can locate them easily.</p>
+    </div>
+
+    <div class="border-2 rounded-xl p-8 text-center" style="border-color:var(--primary);">
+      <h3 class="text-2xl font-bold mb-4" style="color:var(--accent);">Pet Adoption & Care</h3>
+      <p>Adopt pets responsibly & give them a forever home filled with love. 🧡</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="py-10 px-4" style="background:white;">
+  <div class="max-w-4xl mx-auto text-center">
+    <h2 class="text-4xl font-bold mb-6" style="color:var(--accent);">About PetSphere</h2>
+    <p class="text-xl leading-relaxed">
+      PetSphere is built on a simple belief, animals are family.
+We exist to make sure no pet stays lost without being found,  
+no rescued life waits too long for a home, and no adoption happens without love.  
+
+Our platform connects pet owners, rescuers, adopters and kind-hearted individuals  
+into one caring network where information moves fast, help reaches on time,  
+and every animal receives the comfort and protection they deserve.  
+
+From reporting lost pets to guiding new families in adoption,  
+PetSphere is a bridge between those who seek love  
+and those who are ready to give it. 🐾
+
+    </p>
+  </div>
+</section>
+
+<!-- WHAT WE BELIEVE -->
+<!-- WHAT WE BELIEVE -->
+<!-- WHAT WE BELIEVE -->
+<section id="beliefs" class="py-20 px-6" style="background:white;">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+
+    <!-- 🔥 BACKBOX IMAGE STYLE LIKE SAMPLE (NO 98% BOX) -->
+    <div style="position:relative; width:fit-content; margin:auto;">
+      
+      <!-- BACK LAYER BOX -->
+      <div style="
+        width:100%;
+        height:100%;
+        background:#ffe8c6;
+        border-radius:26px;
+        position:absolute;
+        top:22px;
+        left:22px;
+        z-index:0;
+        filter:blur(2px);
+        opacity:0.85;
+      "></div>
+
+      <!-- FRONT IMAGE -->
+      <img src="https://i.pinimg.com/736x/78/48/7e/78487e34de311d7c3752a2394156e1ee.jpg"
+           style="
+             width:520px;
+             height:350px;
+             object-fit:cover;
+             border-radius:26px;
+             position:relative;
+             z-index:2;
+             box-shadow:0 18px 45px rgba(0,0,0,0.18);
+           ">
+    </div>
+
+    <!-- TEXT UNCHANGED ✔ -->
+    <div>
+      <h2 class="text-4xl font-bold mb-6" style="color:var(--accent);">What We Believe In</h2>
+      <p class="text-xl leading-relaxed">
+        We believe every pet deserves compassion, recognition and safety.  
+        A lost animal is not just wandering, they're waiting for someone who loves them.  
+        With community + awareness, no pet should stay unseen or unloved.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
+
+<!-- WHAT WE STRIVE FOR -->
+<section class="py-20 px-6" style="background:white;">
+  <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+
+    <!-- TEXT BLOCK (unchanged) -->
+    <div>
+      <h2 class="text-4xl font-bold mb-6" style="color:var(--accent);">What We Strive For</h2>
+      <p class="text-xl leading-relaxed">
+        We strive to build a world where pets never go missing without help,  
+        adoptions are transparent, and every rescued life finds comfort & belonging.  
+        A future where every animal is treated with compassion, seen with value,  
+        and welcomed into homes that feel safe, warm and forever loving.  
+      </p>
+    </div>
+
+    <!-- 🔥 BACKBOX IMAGE (offset upward) -->
+    <div style="position:relative; width:fit-content; margin:auto;">
+      
+      <!-- Background block (offset UP) -->
+      <div style="
+        width:100%;
+        height:100%;
+        background:#ffe8c6;
+        border-radius:26px;
+        position:absolute;
+        top:-22px;          /* moved UP instead of down */
+        left:22px;
+        z-index:0;
+        filter:blur(2px);
+        opacity:.85;
+      "></div>
+
+      <!-- Front image -->
+      <img src="https://i.pinimg.com/736x/c1/a5/c5/c1a5c5de977c01a95f4cd9ddb8a147c2.jpg"
+           style="
+             width:520px;
+             height:350px;
+             object-fit:cover;
+             border-radius:26px;
+             position:relative;
+             z-index:2;
+             box-shadow:0 18px 45px rgba(0,0,0,.18);
+           ">
+    </div>
+
+  </div>
+</section>
+
+<!-- PETS AVAILABLE SECTION (from dashboard) -->
+<!-- PETS AVAILABLE SECTION (from dashboard + added hamster) -->
+<!-- PETS AVAILABLE SECTION -->
+
+
+
+  
+  
+<!-- Touch + Hover Zoom Effect -->
+<style>
+  .pet-touch {
+    transition: transform 0.25s ease;
+  }
+  .pet-touch:hover {
+    transform: scale(1.05);
+  }
+  .pet-touch:active {
+    transform: scale(1.05);
+  }
+</style>
+
+
+
+
+<!-- RESTORED ORIGINAL FOOTER -->
+<!-- RESTORED UPDATED FOOTER (MATCHED WITH IMAGE STYLE) -->
+<footer id="contact" class="py-16"
+style="background:#463a29; color:#dfd2b3;">
+
+  <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 px-6">
+
+    <div>
+      <h3 class="text-2xl font-bold mb-4" style="color:#ffb234;">PetSphere</h3>
+      <p class="mb-4">
+        Connecting people with pets that need care, love, and a safe home.  
+        Every rescue, every adoption, every reunion — we stand beside you.
+      </p>
+      <p class="font-semibold" style="color:#ffb234;">Follow us:</p>
+      <p>🐾 Facebook &nbsp; 🐾 Twitter &nbsp; 🐾 Instagram</p>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold mb-4" style="color:#ffb234;">Quick Links</h3>
+      <ul class="space-y-1">
+        <li>Home</li>
+        <li>About PetSphere</li>
+        <li>Adopt a Pet</li>
+        <li>Report Lost/Found</li>
+        <li>Support & Help</li>
+        <li>Terms & Privacy</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-bold mb-4" style="color:#ffb234;">Contact</h3>
+      <p>📧 support@petsphere.com</p>
+      <p>📞 +91 98765 43210</p>
+      <p>📍 PetSphere Care Center, Bengaluru, India</p>
+    </div>
+
+  </div>
+
+  <p class="text-center mt-8 font-semibold" style="color:#ffb234;">
+    © 2025 PetSphere. Dedicated to pet safety, rescue & adoption.
+  </p>
+</footer>
+
+
+
+</main>
+
+<!-- slider script (added) -->
+<script>
+  const sliderImages = document.querySelectorAll('.slider-image');
+  let currentIndex = 0;
+
+  setInterval(() => {
+    const prevIndex = currentIndex;
+    currentIndex = (currentIndex + 1) % sliderImages.length;
+
+    sliderImages[prevIndex].classList.remove('active');
+    sliderImages[prevIndex].classList.add('prev');
+
+    sliderImages[currentIndex].classList.add('active');
+
+    // clean up "prev" class after animation
+    setTimeout(() => {
+      sliderImages[prevIndex].classList.remove('prev');
+    }, 800);
+  }, 6000); // change to 10000 for 10 seconds
+</script>
+<script>
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("filter")) {
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("pets").scrollIntoView({ behavior: "instant" });
+        });
+    }
+</script>
+
+</body>
+</html>

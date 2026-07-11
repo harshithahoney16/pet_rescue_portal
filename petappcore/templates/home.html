@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pet Rescue - Home</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <style>
+        body {
+            font-family: Arial;
+            background: #f0f9ff;
+            text-align: center;
+            padding: 80px;
+        }
+        h1 {
+            font-size: 35px;
+            color: #1a3d7c;
+        }
+        .btn {
+            display: inline-block;
+            margin: 15px;
+            padding: 12px 25px;
+            background: #1a73e8;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+        }
+        .btn:hover {
+            background: #0b59c8;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to Pet Rescue Portal</h1>
+    <p>Your one-stop place for adopting & rescuing pets ❤️</p>
+
+    <a class="btn" href="/login/">Login</a>
+    <a class="btn" href="/signup/">Create New Account</a>
+
+</body>
+</html>

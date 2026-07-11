@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>My Chats - PetSphere</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{
+    background:#fff9f0;
+    font-family:"Segoe UI", sans-serif;
+}
+
+/* CHAT CARD */
+.chat-card{
+    background:white;
+    border-radius:20px;
+    padding:20px 24px;
+    width:100%;
+    max-width:900px;            /* 🔥 THIS CONTROLS LENGTH */
+    box-shadow:0 8px 20px rgba(0,0,0,.1);
+    border:2px solid #f0dfc5;
+    transition:.25s ease;
+}
+
+.chat-card:hover{
+    transform:translateY(-2px);
+    background:#fff6e6;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="bg-orange-500 h-[65px] flex items-center justify-between px-8 shadow">
+    <div class="flex items-center gap-3 text-white font-bold text-xl">
+        🐾 PetSphere
+    </div>
+
+    <div class="flex items-center gap-4">
+        <a href="{% url 'dashboard' %}"
+           class="bg-white rounded-full w-10 h-10 flex items-center justify-center">🏠</a>
+
+        
+
+        <a href="{% url 'profile' %}"
+           class="bg-white rounded-full w-10 h-10 flex items-center justify-center font-bold">
+            {{ request.user.username|slice:":1"|upper }}
+        </a>
+    </div>
+</header>
+
+<!-- PAGE -->
+<div class="mt-14 flex flex-col items-center">
+
+    <h2 class="text-3xl font-extrabold mb-10 text-[#cc8400]">
+        💬 My Chats
+    </h2>
+
+    <!-- CHAT LIST -->
+    <div class="flex flex-col gap-8 w-full items-center">
+
+    {% for room in rooms %}
+        <div class="chat-card">
+
+            <div class="flex justify-between items-start">
+
+                <!-- LEFT -->
+                <div>
+                    <h3 class="text-xl font-extrabold text-[#4a3b2d]">
+                        Pet Claim Chat
+                    </h3>
+
+                    <p class="text-sm text-gray-600 mt-1">
+                        Request ID: {{ room.claim_request_id }}
+                    </p>
+                </div>
+
+                <!-- RIGHT (TIME & DATE) -->
+                <div class="text-sm text-gray-500 text-right">
+                    
+
+                    {% if room.last_time %}
+    {{ room.last_time|date:"d M Y" }}<br>
+    {{ room.last_time|date:"h:i A" }}
+{% else %}
+    <span class="italic text-gray-400">No messages yet</span>
+{% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- BUTTON -->
+            <a href="{% url 'chat_room' room.claim_request_id %}"
+               class="inline-block mt-5 px-6 py-2 bg-orange-500 text-white font-bold rounded-full">
+                Open Chat →
+            </a>
+
+        </div>
+    {% empty %}
+        <p class="text-gray-500 text-lg mt-16">
+            No chats yet 🐾
+        </p>
+    {% endfor %}
+
+    </div>
+</div>
+
+</body>
+</html>

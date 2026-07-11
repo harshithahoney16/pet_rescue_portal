@@ -1,0 +1,112 @@
+{% extends "admin_base.html" %}
+{% block title %}Adoption Requests{% endblock %}
+{% block report_active %}active{% endblock %}
+{% block heading %}Eligible for Adoption{% endblock %}
+
+{% block content %}
+
+<style>
+.card-box{
+    display:flex;
+    background:white;
+    padding:18px;
+    border-radius:16px;
+    margin-bottom:28px;
+    box-shadow:0 4px 14px rgba(0,0,0,.07);
+    gap:40px;
+    position:relative;
+    min-height:240px;
+}
+
+.info{
+    flex:1;
+    font-size:15px;
+    color:#222;
+    line-height:1.55;
+}
+
+.card-box img{
+    width:320px;
+    height:280px;
+    border-radius:14px;
+    object-fit:cover;
+}
+
+.badge-status{
+    position:absolute;
+    right:20px;top:18px;
+    background:#ff9e00;
+    font-size:12px;
+    padding:10px 14px;
+    border-radius:18px;
+    font-weight:700;
+    color:white;
+}
+
+.action-btns {
+    position: absolute;
+    bottom: 18px;
+    right: 18px;
+    display: flex;
+    gap: 12px;
+}
+
+.action-btns a{
+    padding:10px 26px;
+    font-size:16px;
+    font-weight:700;
+    border-radius:10px;
+    color:white !important;
+    text-decoration:none !important;
+}
+
+.approve{ background:#049638; }
+</style>
+
+
+{% if pets %}
+    {% for item in pets %}
+    <div class="card-box">
+
+        <!-- IMAGE -->
+        {% if item.image %}
+            <img src="{{ item.image.url }}">
+        {% else %}
+            <img src="/static/default.jpg">
+        {% endif %}
+
+        <span class="badge-status">ELIGIBLE</span>
+
+        <div class="info">
+
+            <h2 style="font-weight:700;">
+                {{ item.pet_name|default:item.species }}
+                <span style="opacity:.6;font-weight:400;">({{ item.breed }})</span>
+            </h2>
+
+            <p><b>Color:</b> {{ item.color }}</p>
+            <p><b>Age:</b> {{ item.age }}</p>
+            <p><b>Gender:</b> {{ item.gender }}</p>
+
+            <p><b>Found Date:</b> {{ item.found_date }}</p>
+            <p><b>Location:</b> {{ item.location }}</p>
+            <p><b>Description:</b> {{ item.description }}</p>
+
+            <div class="action-btns">
+                <a href="{% url 'convert_found_to_adoption' item.id %}" class="approve">
+                    Convert to Adoption
+                </a>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+
+{% else %}
+    <div style="text-align:center;margin-top:50px;">
+        <h2 style="font-weight:600;color:#444;">No Pets Eligible</h2>
+        <p style="opacity:.7;">No found pets have completed 15 days.</p>
+    </div>
+{% endif %}
+
+{% endblock %}

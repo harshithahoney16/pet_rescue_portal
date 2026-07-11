@@ -1,0 +1,405 @@
+{% extends "admin_base.html" %}
+{% block title %}Pending Tasks{% endblock %}
+{% block report_active %}active{% endblock %}
+{% block heading %}Pending Reports{% endblock %}
+
+{% block content %}
+
+<style>
+.card-box{
+    display:flex;
+    background:white;
+    padding:18px;
+    border-radius:16px;
+    margin-bottom:28px;
+    box-shadow:0 4px 14px rgba(0,0,0,.07);
+    gap:40px;
+    position:relative;
+    min-height:240px;
+}
+/* ===== FIXED TABS CONTAINER ===== */
+
+
+.info{
+    flex:1;
+    font-size:15px;
+    color:#222;
+    line-height:1.55;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    
+
+}
+.info h2{
+    margin-bottom: 1px;   /* 🔴 reduce space below title */
+}
+
+.card-box img{
+    width:400px;
+    height:400px;
+    border-radius:14px;
+    object-fit:cover;
+}
+.badge-status{
+    position:absolute;
+    right:20px;
+    top:18px;
+    font-size:12px;
+    padding:10px 14px;
+    border-radius:18px;
+    font-weight:700;
+    color:white;
+}
+.inline-tags span{
+    background:#f5f2e6;
+    padding:4px 11px;
+    border-radius:14px;
+    font-size:12px;
+    margin-right:6px;
+    font-weight:600;
+}
+.row-icon{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:4px;
+}
+.row-icon i{
+    color:#d8841a;
+    font-size:17px;
+}
+.status-chip{
+    background:#ffc400;
+    padding:4px 10px;
+    border-radius:12px;
+    font-size:11px;
+    font-weight:700;
+}
+.action-btns{
+    position:absolute;
+    bottom:18px;
+    right:18px;
+    display:flex;
+    gap:12px;
+}
+.action-btns a{
+    padding:10px 26px;
+    font-size:16px;
+    font-weight:700;
+    border-radius:10px;
+    color:white;
+    text-decoration:none;
+}
+.approve{ background:#049638; }
+.reject{ background:#d81515; }
+.request-tabs{
+    display:flex;
+    gap:16px;
+    margin-bottom:28px;
+    justify-content:flex-end; 
+}
+.pending-summary{
+    position:absolute;
+    left:300px;
+    top:95px;
+    display:flex;
+    gap:12px;
+}
+
+.summary-chip{
+    padding:8px 18px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:700;
+    color:white;
+}
+
+.summary-chip.lost{
+    background:#ff6b3d;
+}
+
+.summary-chip.found{
+    background:#007bff;
+}
+
+.summary-chip.adopt{
+    background:#6f42c1;
+}
+
+
+.request-tabs .tab{
+    padding:8px 18px;
+    border-radius:14px;
+    background:#fff1cc;
+    text-decoration:none;
+    font-weight:600;
+    color:#3a2a00;
+    font-size:14px;
+}
+
+.request-tabs .tab.active{
+    background:#d9c59a;
+    color:#3a2a00;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+</style>
+
+    <div class="request-tabs">
+
+    <a href="?type=all"
+       class="tab {% if req_type == 'all' %}active{% endif %}">
+        All
+    </a>
+
+    <a href="?type=lost"
+       class="tab {% if req_type == 'lost' %}active{% endif %}">
+        Lost
+    </a>
+
+    <a href="?type=found"
+       class="tab {% if req_type == 'found' %}active{% endif %}">
+        Found
+    </a>
+
+    <a href="?type=adopt"
+       class="tab {% if req_type == 'adopt' %}active{% endif %}">
+        Adoption
+    </a>
+
+</div>
+
+
+<!-- 🔢 Pending Counts -->
+    <!-- 🔢 Pending Counts Summary -->
+    <div class="pending-summary">
+
+        <div class="summary-chip lost">
+        Lost: {{ lost_count }}
+    </div>
+
+        <div class="summary-chip found">
+        Found: {{ found_count }}
+    </div>
+
+        <div class="summary-chip adopt">
+        Adoption: {{ adopt_count }}
+    </div>
+
+</div>
+
+
+
+{% for item in pending %}
+
+
+<div class="card-box">
+
+    <!-- IMAGE (SAFE FOR ADOPTION) -->
+    {% if item.item_type == "adopt" and item.pet and item.pet.image %}
+        <img src="{{ item.pet.image.url }}">
+    {% elif item.pet_image %}
+        <img src="{{ item.pet_image.url }}">
+    {% else %}
+        <img src="{{ item.image.url }}">
+    {% endif %}
+
+    <!-- BADGE -->
+    <span class="badge-status"
+        style="background:
+        {% if item.item_type == 'lost' %}#ff6b3d
+        {% elif item.item_type == 'found' %}#007bff
+        {% else %}#6f42c1{% endif %};">
+        {% if item.item_type == "lost" %}LOST
+        {% elif item.item_type == "found" %}FOUND
+        {% else %}ADOPTION{% endif %}
+    </span>
+
+    <div class="info">
+
+        <!-- TITLE -->
+        <h2>
+    {% if item.item_type == "adopt" %}
+        {{ item.pet.species }} ({{ item.pet.breed }})
+
+    {% elif item.item_type == "lost" %}
+    {{ item.pet_name }}
+    <span style="font-size:15px;font-weight:600;color:#555;">
+        · {{ item.pet_type }}
+        {% if item.breed %} ({{ item.breed }}){% endif %}
+    </span>
+
+
+    {% else %}
+        {{ item.species }} ({{ item.breed }})
+    {% endif %}
+</h2>
+
+        <p style="margin-bottom:8px; font-size:13px; font-weight:700; color:#777;">
+    Pet ID:
+    {% if item.item_type == "adopt" %}
+        #PET{{ item.pet.id }}
+    {% else %}
+        #PET{{ item.id }}
+    {% endif %}
+</p>
+
+        <!-- TAGS -->
+        <div class="inline-tags">
+            {% if item.item_type == "adopt" %}
+                <span>{{ item.pet.color }}</span>
+                <span>{{ item.pet.age }} years</span>
+                <span>{{ item.pet.gender }}</span>
+            {% else %}
+                <span>{{ item.color }}</span>
+                <span>{{ item.age }} years</span>
+                <span>{{ item.gender }}</span>
+            {% endif %}
+        </div>
+        
+
+        <!-- WEIGHT -->
+        <div class="row-icon">
+            <i class="bi bi-speedometer2"></i>
+            <b>Weight:</b>
+            {% if item.item_type == "adopt" %}
+                {{ item.pet.weight }}
+            {% else %}
+                {{ item.weight }}
+            {% endif %}
+        </div>
+
+        <!-- HEALTH -->
+        <div class="row-icon">
+            <i class="bi bi-heart-pulse"></i>
+            <b>Health:</b>
+            {% if item.item_type == "adopt" %}
+                {{ item.pet.health_status }}
+            {% else %}
+                {{ item.health_status }}
+            {% endif %}
+        </div>
+
+        <!-- VACCINE (ONLY LOST) -->
+        {% if item.item_type == "lost" and item.vaccinated %}
+        <div class="row-icon">
+            <i class="bi bi-shield-check"></i>
+            <b>Vaccinated:</b> {{ item.vaccinated }}
+        </div>
+        {% endif %}
+
+        <!-- DATE -->
+        <div class="row-icon">
+            <i class="bi bi-calendar"></i>
+            {% if item.item_type == "lost" %}
+                {{ item.lost_date }}
+            {% elif item.item_type == "found" %}
+                {{ item.found_date }}
+            {% else %}
+                {{ item.pet.found_date }}
+            {% endif %}
+            &nbsp; | &nbsp;
+
+        <i class="bi bi-person"></i>
+<b>Reported by:</b>
+
+{% if item.item_type == "adopt" %}
+    {{ item.user.first_name|default:item.user.username }}
+
+{% else %}
+    {% if item.owner_name and item.owner_name|length > 0 %}
+        {{ item.owner_name }}
+    {% else %}
+        {{ item.user.first_name|default:item.user.username }}
+    {% endif %}
+{% endif %}
+
+
+
+
+
+        </div>
+
+        <!-- LOCATION -->
+        <div class="row-icon">
+            <i class="bi bi-geo-alt"></i>
+            {% if item.item_type == "adopt" %}
+                {{ item.pet.location }}
+                {% if item.pet.location_url %}
+                    • <a href="{{ item.pet.location_url }}" target="_blank">Location URL</a>
+                {% endif %}
+            {% else %}
+                {{ item.location }}
+                {% if item.location_url %}
+                    • <a href="{{ item.location_url }}" target="_blank">Location URL</a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <!-- CONTACT -->
+        <div class="row-icon">
+            <i class="bi bi-telephone"></i>
+            {% if item.item_type == "lost" %}
+                {{ item.phone }}
+            {% elif item.item_type == "found" %}
+                {{ item.contact_number }}
+            {% else %}
+                {{ item.pet.contact_number }}
+            {% endif %}
+            |
+            <i class="bi bi-envelope"></i>
+            {% if item.item_type == "lost" %}
+                {{ item.email }}
+            {% elif item.item_type == "found" %}
+                {{ item.contact_email }}
+            {% else %}
+                {{ item.pet.contact_email }}
+            {% endif %}
+        </div>
+        <!-- REPORTED TIME -->
+        <div class="row-icon">
+    <i class="bi bi-clock"></i>
+    <b>Reported on:</b>
+    {% if item.item_type == "lost" %}
+        {{ item.reported_on|date:"d M Y, h:i A" }}
+    {% elif item.item_type == "found" %}
+        {{ item.created_on|date:"d M Y, h:i A" }}
+    {% else %}
+        {{ item.pet.created_on|date:"d M Y, h:i A" }}
+    {% endif %}
+</div>
+
+        <!-- DESCRIPTION -->
+        <p><b>Description:</b>
+            {% if item.item_type == "adopt" %}
+                {{ item.pet.description }}
+            {% else %}
+                {{ item.description }}
+            {% endif %}
+        </p>
+
+        <p><b>Status:</b> <span class="status-chip">PENDING</span></p>
+
+        <!-- ACTIONS -->
+        <div class="action-btns">
+            {% if item.item_type == "lost" %}
+                <a href="{% url 'update_lost_status' item.id 'approve' %}" class="approve">Approve</a>
+                <a href="{% url 'update_lost_status' item.id 'reject' %}" class="reject">Reject</a>
+            {% elif item.item_type == "found" %}
+                <a href="{% url 'update_report_status' item.id 'approve' %}" class="approve">Approve</a>
+                <a href="{% url 'update_report_status' item.id 'reject' %}" class="reject">Reject</a>
+            {% else %}
+                <a href="{% url 'approve_adoption' item.id %}" class="approve">Approve</a>
+                <a href="{% url 'reject_adoption' item.id %}" class="reject">Reject</a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+
+{% empty %}
+<h3 style="text-align:center">No Pending Requests</h3>
+{% endfor %}
+
+{% endblock %}

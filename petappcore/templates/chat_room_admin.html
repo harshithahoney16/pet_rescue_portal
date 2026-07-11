@@ -1,0 +1,245 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Chat Room{% endblock %}
+
+{% block content %}
+<style>
+.chat-wrapper{
+    background:white;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    display:flex;
+    height:70vh;
+    overflow:hidden;
+    position:relative;
+}
+
+/* MAIN */
+.chat-main{ flex:1; display:flex; flex-direction:column; }
+
+/* HEADER */
+.chat-header{
+    padding:18px 24px;
+    background:linear-gradient(135deg,#ffb84d,#ffa500);
+    color:#422d07;
+}
+.chat-header h3{ margin:0;font-size:20px;font-weight:700; }
+.chat-header small{ font-size:13px; }
+
+/* BODY */
+.chat-body{
+    flex:1;
+    padding:20px;
+    background:#fff9f0;
+    overflow-y:auto;
+}
+
+/* MESSAGE */
+.msg{
+    margin-bottom:12px;
+    max-width:65%;
+}
+.msg.me{
+    margin-left:auto;
+    text-align:right;
+}
+.msg span{
+    display:inline-block;
+    padding:10px 14px;
+    border-radius:16px;
+    background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,.12);
+}
+.msg.me span{
+    background:#ffe2b8;
+}
+.chat-img{
+    max-width:220px;
+    border-radius:12px;
+    margin-top:6px;
+    display:block;
+}
+
+
+/* INPUT */
+.chat-input{
+    padding:16px;
+    background:white;
+    border-top:1px solid #eee;
+    display:flex;
+    gap:12px;
+}
+.chat-input input{
+    flex:1;
+    padding:12px 16px;
+    border-radius:25px;
+    border:1px solid #ddd;
+}
+.chat-input button{
+    background:#ffa500;
+    border:none;
+    padding:0 18px;
+    border-radius:50%;
+    color:white;
+}
+
+/* SIDE */
+.chat-side{
+    width:280px;
+    background:white;
+    border-left:1px solid #eee;
+    padding:20px;
+}
+.participant{
+    display:flex;
+    gap:10px;
+    margin-bottom:12px;
+}
+.avatar{
+    width:36px;height:36px;border-radius:50%;
+    background:#ffa500;color:white;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;
+}
+
+/* ADMIN ONLY */
+.admin-box{
+    margin-top:18px;
+    padding-top:15px;
+    border-top:1px dashed #ddd;
+}
+</style>
+
+<div class="chat-wrapper">
+
+    <!-- CHAT -->
+    <div class="chat-main">
+        <div class="chat-header" style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+">
+    <div>
+        <h3>🐾 Pet Chat Room</h3>
+        <small>
+            {{ pet_kind|upper }}-{{ pet.id }} |
+            Request {{ req.id }}
+        </small>
+    </div>
+
+    
+</div>
+            <div class="chat-body">
+    {% for m in messages %}
+        <div class="msg {% if m.sender.id == request.user.id %}me{% endif %}">
+            <span>
+                <b>
+{% if m.sender.is_staff %}
+    {{ m.sender_label }}
+{% else %}
+    {{ m.sender.username }}
+{% endif %}
+</b>
+
+                {% if m.message %}
+                    <div>{{ m.message }}</div>
+                {% endif %}
+
+                {% if m.image %}
+                    <img src="{{ m.image.url }}" class="chat-img">
+                {% endif %}
+            </span>
+        </div>
+    {% empty %}
+        <p style="text-align:center;color:#888;margin-top:60px;">
+            No messages yet
+        </p>
+    {% endfor %}
+</div>
+
+        
+
+        {% if chatroom.status == "OPEN" %}
+<form method="post" class="chat-input">
+    {% csrf_token %}
+    <input type="text" name="message" placeholder="Type your message..." required>
+    <button type="submit">➤</button>
+</form>
+{% else %}
+<div style="
+    padding:14px;
+    text-align:center;
+    color:#888;
+    border-top:1px solid #eee;
+">
+    🔒 Chat closed — read only
+</div>
+{% endif %}
+
+    </div>
+
+    <!-- PARTICIPANTS -->
+    <div class="chat-side">
+        <h4>Participants</h4>
+
+        {% for p in participants %}
+        <div class="participant">
+            <div class="avatar">{{ p.display_name|slice:":1"|upper }}</div>
+            <div>
+                <b>
+{{ p.display_name }}
+
+</b>
+<br>
+<small>{{ p.role|title }}</small>
+
+            </div>
+        </div>
+        {% endfor %}
+
+        <!-- ADMIN CONTROLS -->
+        {% if reporter %}
+        <div class="admin-box">
+            <h4>Add Reporter</h4>
+
+            <form method="post" action="{% url 'add_reporter' req.id %}">
+                {% csrf_token %}
+                <select name="reporter_id" required>
+                    <option value="{{ reporter.id }}">{{ reporter.username }}</option>
+                </select>
+
+                <button type="submit"
+                        style="margin-top:8px;width:100%;background:#ff9800;color:white;padding:8px;border:none;border-radius:8px;">
+                    ➕ Add Reporter
+                </button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+    {% if chatroom.status == "OPEN" %}
+<form method="post"
+      action="{% url 'close_chat' req.id %}"
+      style="
+        position:absolute;
+        bottom:18px;
+        right:22px;
+      ">
+    {% csrf_token %}
+    <button style="
+        background:#d32f2f;
+        color:white;
+        border:none;
+        padding:10px 18px;
+        border-radius:10px;
+        font-weight:700;
+        cursor:pointer;
+        box-shadow:0 4px 10px rgba(0,0,0,.25);
+    ">
+        🔒 Close Chat
+    </button>
+</form>
+{% endif %}
+
+
+</div>
+{% endblock %}

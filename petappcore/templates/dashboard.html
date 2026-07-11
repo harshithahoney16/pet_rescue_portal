@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{% block title %}Dashboard - PetSphere{% endblock %}</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+
+<style>
+:root {
+    --bg: #fff9f0;
+    --primary: #ffa500;
+    --primary-dark: #cc8400;
+    --accent: #cc8400;
+    --text: #4a3b2d;
+    --success: #0f7d00;
+}
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+}
+/* NOTIFICATION BELL */
+.notif-btn{
+    position: relative;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: white;
+    color: var(--primary-dark);
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--primary-dark);
+    text-decoration: none;
+    transition: .25s;
+}
+
+.notif-btn:hover{
+    transform: scale(1.08);
+}
+
+.notif-count{
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: red;
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+a {
+    pointer-events: auto;
+}
+
+/* HEADER */
+.header {
+    background: var(--primary);
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: relative;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+.left-brand { display: flex; align-items: center; gap: 12px; }
+.left-brand img { width: 42px; height: 42px; border-radius: 50%; }
+.brand-name { font-size: 26px; color: white; font-weight: 700; }
+
+.profile-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%; background: white;
+    color: var(--primary-dark); font-size: 18px;
+    font-weight: bold; display: flex; align-items: center;
+    justify-content: center; border: 2px solid var(--primary-dark);
+    transition: .3s; text-decoration: none;
+}
+.profile-btn:hover { transform: scale(1.08); }
+
+/* MAIN */
+.content { width: 90%; max-width: 1150px; margin: 60px auto; }
+/* WELCOME SECTION */
+.welcome-text {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.welcome-text h1 {
+    font-size: 50px;
+    font-weight: 900;
+    color: var(--primary-dark);
+}
+
+.welcome-text p {
+    font-size: 20px;
+    color: #6b5b4a;
+    margin-top: 10px;
+}
+
+/* CARD CONTAINER */
+
+
+/* CARD CONTAINER */
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 55px;
+}
+/* CHAT BUTTON */
+.chat-btn{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: white;
+    color: var(--primary-dark);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 17px;
+
+    border: 2px solid var(--primary-dark);
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.chat-btn:hover{
+    background: var(--primary-dark);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* ICON */
+.chat-icon{
+    font-size: 15px;
+}
+
+/* UNREAD COUNT BADGE */
+.chat-count{
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    background: #e53935;
+    color: white;
+
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: 50%;
+
+    border: 2px solid white;
+}
+
+/* INDIVIDUAL CARD */
+.card {
+    width: 300px;
+    padding: 28px 20px;
+    background: white;
+    border-radius: 22px;
+    border: 2px solid #f0dfc5;
+    box-shadow: 0px 8px 22px rgba(0,0,0,0.12);
+    text-decoration: none;
+    transition: .25s ease;
+    text-align: center;
+    color: var(--text);
+}
+.pets-section {
+    background: transparent;   /* 🔥 remove big white slab */
+    padding-top: 90px;
+    padding-bottom: 90px;
+    margin-top: 40px;
+}
+
+
+
+/* ICON (simple emoji) */
+.card-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+    transition: 0.25s ease;
+}
+
+/* TITLE */
+.card-title {
+    font-size: 22px;
+    font-weight: 800;
+    transition: 0.25s ease;
+}
+
+/* DESCRIPTION */
+.card-desc {
+    font-size: 15px;
+    color: #6b6b6b;
+    margin-top: 6px;
+    transition: 0.25s ease;
+}
+
+/* HOVER EFFECT → turn everything yellow-orange */
+.card:hover {
+    border-color: var(--primary);
+    transform: translateY(-6px);
+}
+
+.card:hover .card-title,
+.card:hover .card-desc,
+.card:hover .card-icon {
+    color: var(--primary-dark);
+}
+
+
+
+
+
+
+/* FOOTER */
+footer{
+    background:#fff1cc;margin-top:120px;padding:70px 8%;
+    display:flex;justify-content:space-between;flex-wrap:wrap;color:#4a3b2d;
+}
+.footer-bottom{text-align:center;padding:30px;font-size:14px;color:#664b2b;}
+</style>
+</head>
+
+<body>
+
+
+
+<header class="header">
+    <div class="left-brand">
+        <img src="https://png.pngtree.com/element_our/png/20180926/pets-vector-logo-template-this-cat-and-dog-logo-could-be-png_113815.jpg">
+        <span class="brand-name">PetSphere</span>
+    </div>
+
+    <!-- RIGHT SIDE ACTIONS -->
+    <div style="display:flex;align-items:center;gap:18px;">
+
+        <!-- ✅ LOST PET STATUS INQUIRY -->
+        <a href="{% url 'public_home' %}" 
+       class="px-4 py-2 rounded-full font-bold text-black
+              bg-white hover:bg-orange-600 transition flex items-center gap-2">
+        🏠 Home
+    </a>
+       
+       <a href="{% url 'user_chats' %}" class="chat-btn">
+        <span class="chat-icon">💬</span>
+        <span class="chat-text">Chats</span>
+
+        {% if unread_count > 0 %}
+            <span class="chat-count">{{ unread_count }}</span>
+        {% endif %}
+    </a>
+
+
+    <!-- NOTIFICATION BELL -->
+        
+
+
+        <!-- PROFILE -->
+        <a href="{% url 'profile' %}" class="profile-btn">
+            {{ request.user.username|slice:":1"|upper }}
+        </a>
+
+    </div>
+</header>
+
+
+<div class="content">
+{% block content %}
+{% if messages %}
+    <div style="background:#d3ffd3;padding:10px;border-radius:8px;margin-bottom:15px;font-weight:600;color:#056a00;">
+        {% for msg in messages %} {{ msg }} {% endfor %}
+    </div>
+{% endif %}
+
+<div class="welcome-text">
+    <h1>
+  Welcome back,
+  {% if profile.full_name %}
+    {{ profile.full_name }}
+  {% elif request.user.first_name %}
+    {{ request.user.first_name }}
+  {% else %}
+    {{ request.user.username }}
+  {% endif %}
+  👋
+</h1>
+
+    <p>What would you like to do today?</p>
+</div>
+<div class="cards">
+
+    <!-- FOUND PET -->
+    <a href="{% url 'report_found_pet' %}" class="card">
+        <div class="card-icon">🐾</div>
+        <div class="card-title">Report Found Pet</div>
+        <div class="card-desc">Help reunite a pet with their family</div>
+    </a>
+
+    <!-- LOST PET -->
+    <a href="{% url 'report_lost_pet' %}" class="card">
+        <div class="card-icon">🔍</div>
+        <div class="card-title">Report Lost Pet</div>
+        <div class="card-desc">Create an alert for your missing pet</div>
+    </a>
+
+    <!-- ADOPT PET -->
+    <a href="{% url 'adopt_pet' %}" class="card">
+        <div class="card-icon">🐶</div>
+        <div class="card-title">Adopt a Pet</div>
+        <div class="card-desc">Find your new best friend today</div>
+    </a>
+
+</div>
+{% endblock %}
+</div>
+
+<!-- ================= PETS SECTION ================= -->
+
+
+<!-- ================= YOUR APPROVED PET REPORTS ================= -->
+<!-- ================= YOUR APPROVED REPORTS ================= -->
+<!-- ================= FILTER CONTAINER ================= -->
+
+<!-- SEARCH HEADING -->
+<div class="text-center mt-24 mb-6">
+  <h2 class="text-3xl font-extrabold text-[#cc8400]">
+    🔎 Search & Find Your Pet
+  </h2>
+  <p class="text-gray-600 mt-2">
+    Filter through lost, found and adoptable pets easily
+  </p>
+</div>
+
+<!-- ================= FILTER BAR ================= -->
+<div class="flex justify-center -mb-12 relative z-10">
+
+  <form method="get"
+        class="bg-white rounded-2xl shadow-xl px-8 py-6
+                grid grid-cols-5 gap-6 items-end max-w-5xl w-full">
+
+    <!-- PET TYPE -->
+    
+  <div>
+  <label class="block text-xs font-semibold mb-1 text-gray-500">
+    Pet Name(Optional)
+  </label>
+  <input type="text" name="pet_name"
+         value="{{ request.GET.pet_name }}"
+         placeholder="Eg: Coco"
+         class="px-4 py-2 rounded-lg border w-44
+                focus:ring-2 focus:ring-orange-400 outline-none">
+</div>
+
+    <div>
+      <label class="block text-xs font-semibold mb-1 text-gray-500">
+        Pet Type
+      </label>
+      <input type="text" name="species"
+             value="{{ request.GET.species }}"
+             placeholder="Eg:Dog, Cat"
+             class="px-4 py-2 rounded-lg border w-44
+                    focus:ring-2 focus:ring-orange-400 outline-none">
+    </div>
+
+    <!-- BREED -->
+    <div>
+      <label class="block text-xs font-semibold mb-1 text-gray-500">
+        Breed
+      </label>
+      <input type="text" name="breed"
+             value="{{ request.GET.breed }}"
+             placeholder="Eg:Labrador"
+             class="px-4 py-2 rounded-lg border w-44
+                    focus:ring-2 focus:ring-orange-400 outline-none">
+    </div>
+
+    <!-- LOCATION -->
+    <div>
+      <label class="block text-xs font-semibold mb-1 text-gray-500">
+        Location
+      </label>
+      <input type="text" name="location"
+             value="{{ request.GET.location }}"
+             placeholder="City / Area"
+             class="px-4 py-2 rounded-lg border w-48
+                    focus:ring-2 focus:ring-orange-400 outline-none">
+    </div>
+
+    <!-- BUTTON -->
+    <button type="submit"
+        class="bg-orange-500 text-white
+               px-8 py-4
+               ml-5
+               rounded-xl
+               font-bold text-lg
+               hover:bg-orange-600
+               transition
+               flex items-center justify-center gap-2">
+    🔍 Filter
+</button>
+
+
+    {% if request.GET %}
+    <div class="col-span-5 text-right">
+      <a href="{% url 'dashboard' %}#pets"
+         class="text-sm text-gray-400 underline ">
+         Clear
+      </a>
+    </div>
+    {% endif %}
+
+  </form>
+</div>
+
+
+
+
+<section id="pets" class="px-4 py-16 pets-section">
+  <div class="container mx-auto">
+
+    <h2 class="text-4xl font-bold mb-8" style="color:var(--accent);">
+      📍 Pets Looking for a Loving Home
+    </h2>
+
+    <!-- FILTER TABS -->
+    <div class="flex gap-6 font-bold text-lg mb-8">
+      <a href="?filter=all#pets"   class="{% if filter == 'all' %}text-orange-600 border-b-2 border-orange-600{% endif %}">All</a>
+      <a href="?filter=lost#pets"  class="{% if filter == 'lost' %}text-orange-600 border-b-2 border-orange-600{% endif %}">Lost Pets</a>
+      <a href="?filter=found#pets" class="{% if filter == 'found' %}text-orange-600 border-b-2 border-orange-600{% endif %}">Found Pets</a>
+      <a href="?filter=adopt#pets" class="{% if filter == 'adopt' %}text-orange-600 border-b-2 border-orange-600{% endif %}">Adoption</a>
+    </div>
+
+    <div class="grid grid-cols-5 gap-6">
+
+{% for p in pets %}
+    {% if p.status == "Approved" or not p.status %}
+
+    {% if p.pet_type %}
+        <a href="{% url 'pet_details' 'lost' p.pk %}">
+    {% elif p.is_adoption %}
+        <a href="{% url 'pet_details' 'adopt' p.pk %}">
+    {% else %}
+        <a href="{% url 'pet_details' 'found' p.pk %}">
+    {% endif %}
+
+
+        <div class="w-[240px] bg-white rounded-xl shadow-lg overflow-hidden hover:scale-105 duration-200">
+
+            {% if p.image %}
+                <img src="{{ p.image.url }}" class="h-48 w-full object-cover">
+            {% elif p.pet_image %}
+                <img src="{{ p.pet_image.url }}" class="h-48 w-full object-cover">
+            {% else %}
+                <div class="h-48 w-full bg-gray-300"></div>
+            {% endif %}
+
+            <div class="p-3">
+                <h3 class="text-xl font-bold" style="color:var(--accent);">
+                    {% if p.pet_name %}
+                        {{ p.pet_name }}
+                    {% elif p.species %}
+                        {{ p.species }}
+                    {% else %}
+                        Unknown Pet
+                    {% endif %}
+                </h3>
+
+                {% if p.location %}
+                <p class="opacity-70 text-sm">📍{{ p.location }}</p>
+                {% endif %}
+
+                <span class="font-semibold
+                    {% if p.pet_type %} text-red-700
+                    {% elif p.is_adoption %} text-blue-700
+                    {% else %} text-green-700
+                    {% endif %}
+                ">
+                    {% if p.pet_type %}
+                        Lost Pet
+                    {% elif p.is_adoption %}
+                        For Adoption
+                    {% else %}
+                        Found Pet
+                    {% endif %}
+                </span>
+
+            </div>
+
+        </div>
+    </a>
+
+{% endif %}
+{% empty %}
+<div class="text-center w-full py-6 text-gray-600 text-lg font-bold">
+    🐾 No pets available right now!
+</div>
+{% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+
+
+
+
+<footer>
+    <div style="max-width:300px;">
+        <h2 style="color:#cc8400;font-size:26px;">PetSphere</h2>
+        <p>Connecting people with pets.<br>Rescue, adoption & love.</p>
+        <h4 style="margin-top:20px;">Follow us:</h4>
+        <p>🐾 Facebook • 🐾 Twitter • 🐾 Instagram</p>
+    </div>
+
+    <div>
+        <h2 style="color:#cc8400;font-size:26px;">Quick Links</h2>
+        <p>Home</p><p>Adopt Pet</p><p>Report Lost/Found</p>
+    </div>
+
+    <div>
+        <h2 style="color:#cc8400;font-size:26px;">Contact</h2>
+        <p>📧 support@petsphere.com</p>
+        <p>📞 +91 98765 43210</p>
+    </div>
+</footer>
+
+<div class="footer-bottom">
+© 2025 PetSphere — Rescue With Love.
+</div>
+
+</body>
+</html>

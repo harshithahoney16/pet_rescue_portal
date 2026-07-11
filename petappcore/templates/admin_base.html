@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>{% block title %}PetSphere Admin{% endblock %}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css">
+
+
+<style>
+/* ================= GLOBAL ================= */
+body{
+    background:#fff7e1;
+    margin:0;
+    font-family:"Poppins",sans-serif;
+}
+/* ================= TOP BACK ARROW ================= */
+/* ================= HOME BUTTON (TOP RIGHT) ================= */
+.home-btn{
+    position:absolute;
+    right:95px;          /* sits just left of profile */
+    top:14px;
+    padding:8px 16px;
+    border-radius:18px;
+    background:#fff3d6;
+    color:#ff9800;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:.25s ease;
+}
+
+.home-btn:hover{
+    background:#ff9800;
+    color:white;
+}
+
+
+/* ================= FIXED SIDEBAR ================= */
+.sidebar{
+    width:250px;height:100vh;position:fixed;top:0;left:0;
+    background:linear-gradient(180deg,#ffb84d,#ffcc70);
+    padding-top:30px;
+    box-shadow:4px 0 14px rgba(0,0,0,.18);
+}
+.sidebar-logo{text-align:center;margin-bottom:25px;}
+.sidebar-logo img{
+    width:75px;height:75px;border-radius:50%;object-fit:cover;
+}
+.sidebar-logo h2{
+    margin-top:10px;color:#422d07;font-weight:700;
+}
+
+/* ========= MENU ========= */
+.sidebar-menu a{
+    display:flex;gap:12px;padding:12px 25px;margin:5px 10px;
+    color:#3a2608;text-decoration:none;border-radius:10px;
+    font-size:15px;font-weight:500;transition:.25s;
+}
+.sidebar-menu a:hover{
+    background:#ffe4a3;transform:translateX(5px);font-weight:700;
+}
+
+/* ACTIVE PAGE HIGHLIGHT */
+.sidebar-menu a.active{
+    background:#ffeaae !important;
+    font-weight:700;
+    border-left:6px solid #ff9500;
+}
+
+/* ================= TOPBAR ================= */
+.topbar{
+    margin-left:250px;height:70px;background:white;
+    border-bottom:3px solid #ffce7a;
+    display:flex;align-items:center;
+    padding-left:80px;
+    font-size:22px;font-weight:700;color:#4b3514;
+    position:relative;
+}
+
+/* ================= PROFILE DROPDOWN ================= */
+.profile-icon{
+    width:42px;height:42px;
+    background:#ffa500;
+    color:white;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:700;
+    font-size:18px;
+    cursor:pointer;
+   
+    box-shadow:0 3px 8px rgba(0,0,0,0.2);
+}
+
+.profile-dropdown{
+    display:none;
+    position:absolute;
+    right:35px;
+    top:60px;
+    background:white;
+    width:170px;
+    box-shadow:0 4px 20px rgba(0,0,0,.18);
+    border-radius:12px;
+    padding:10px;
+    z-index:999;
+}
+
+.profile-dropdown a{
+    display:block;
+    padding:10px;
+    color:#4a3311;
+    text-decoration:none;
+    font-size:15px;
+    font-weight:500;  /* lighter & elegant */
+    border-radius:8px;
+}
+
+/* ===== PROFILE WRAPPER ===== */
+.profile-wrapper{
+    position:absolute;
+    right:35px;
+    top:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:4px;
+}
+
+/* SMALL ROLE TEXT BELOW CIRCLE */
+.profile-role{
+    margin-top:4px;
+    font-size:11px;
+    font-weight:600;
+    color:#7a4b00;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+
+.profile-dropdown a:hover{
+    background:#ffe7b8;
+}
+
+/* ================= CONTENT WRAPPER ================= */
+.content{
+    margin-left:250px;padding:32px;
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- 💛 GLOBAL FIXED SIDEBAR (USED FOR ALL ADMIN PAGES) -->
+<div class="sidebar">
+
+    <div class="sidebar-logo">
+        <img src="https://png.pngtree.com/element_our/png/20180926/pets-vector-logo-template-this-cat-and-dog-logo-could-be-png_113815.jpg">
+        <h2>PetSphere Admin</h2>
+    </div>
+
+    <div class="sidebar-menu">
+
+        <a href="{% url 'admin_dashboard' %}" class="{% block dash_active %}{% endblock %}">
+            <i class="bi bi-grid-fill"></i> Overview
+        </a>
+
+        <a href="{% url 'admin_users' %}" class="{% block users_active %}{% endblock %}">
+            <i class="bi bi-people-fill"></i> Users
+        </a>
+        <a href="{% url 'approved_reports' %}" class="{% block pets_active %}{% endblock %}">
+    🐾 Total Pets
+</a>
+
+        <!-- Pending Reports (ALL) -->
+<a href="{% url 'admin_pending_tasks' %}?type=all"
+   class="{% block report_active %}{% endblock %}">
+    <i class="bi bi-clipboard-check"></i> Pending Reports
+</a>
+<a href="{% url 'admin_chat_requests' %}" class="sidebar-link">
+    <i class="bi bi-chat-left-text"></i>
+    <span>Chat Requests</span>
+</a>
+
+
+
+
+<!-- Lost Requests -->
+<a href="{% url 'admin_pending_tasks' %}?type=lost"
+   class="{% block lost_active %}{% endblock %}">
+    <i class="bi bi-search-heart"></i> Lost Requests
+</a>
+
+<!-- Found Requests -->
+<a href="{% url 'admin_pending_tasks' %}?type=found"
+   class="{% block found_active %}{% endblock %}">
+    <i class="bi bi-binoculars-fill"></i> Found Requests
+</a>
+
+<!-- Adoption Requests -->
+<a href="{% url 'admin_pending_tasks' %}?type=adopt"
+   class="{% block adopt_active %}{% endblock %}">
+    <i class="bi bi-heart-fill"></i> Adoption Requests
+</a>
+        
+
+    </div>
+</div>
+
+<!-- PAGE HEADING -->
+<div class="topbar">
+
+    <!-- 🔙 BACK TO PUBLIC HOME -->
+    <a href="{% url 'public_home' %}" class="home-btn">
+        <i class="bi bi-house-fill"></i> Home
+    </a>
+
+    {% block heading %}{% endblock %}
+
+
+    <!-- ⭐ PROFILE BUTTON (TOP RIGHT) -->
+    <div class="profile-wrapper">
+    <div class="profile-icon" onclick="toggleProfileMenu()">
+        {{ request.user.first_name|default:request.user.username|slice:":1" }}
+    </div>
+
+    <div class="profile-role">
+        {% if request.user.is_staff %}
+            Admin
+        {% else %}
+            User
+        {% endif %}
+    </div>
+</div>
+
+
+
+    <div id="profileDropdown" class="profile-dropdown">
+        <a href="{% url 'change_password' %}">
+            <i class="bi bi-key"></i> Change Password
+        </a>
+        <a href="{% url 'logout' %}">
+
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+</div>
+
+<!-- PAGE CONTENT -->
+<div class="content">
+    {% block content %}
+    {% endblock %}
+</div>
+
+<script>
+function toggleProfileMenu() {
+    let menu = document.getElementById("profileDropdown");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+window.onclick = function(event) {
+    if (!event.target.closest('.profile-icon')) {
+        document.getElementById("profileDropdown").style.display = "none";
+    }
+};
+</script>
+
+</body>
+</html>

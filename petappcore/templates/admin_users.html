@@ -1,0 +1,103 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Users{% endblock %}
+
+{% block users_active %}active{% endblock %}
+
+{% block heading %}Users{% endblock %}
+
+{% block content %}
+
+<style>
+.table-box{
+    background:white;padding:25px;border-radius:15px;
+    width:90%;box-shadow:0 0 14px rgba(0,0,0,.12);
+}
+.search-box{
+    width:260px;padding:10px 15px;border-radius:10px;
+    border:none;outline:none;font-size:15px;
+    background:#fff8d4;margin-bottom:15px;
+}
+table{width:100%;border-collapse:collapse;margin-top:10px;}
+th,td{
+    padding:13px;border-bottom:1px solid #ececec;
+    font-size:15px;text-align:left;
+}
+th{font-weight:600;color:#614525;}
+td{color:#3a2a14;}
+.status-active{color:#0bbf47;font-weight:600;}
+.status-inactive{color:#ff3131;font-weight:600;}
+tr:hover td{background:#fff5c7;cursor:pointer;}
+.arrow-circle{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#ffe7b3;          /* light orange */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    transition:.25s ease;
+}
+
+.arrow-circle i{
+    font-size:18px;
+    color:#ff9800;
+    font-weight:700;
+}
+
+.arrow-circle:hover{
+    background:#ff9800;
+}
+
+.arrow-circle:hover i{
+    color:white;
+}
+
+</style>
+
+<div class="users-title" style="font-size:26px;font-weight:700;color:#4a3311;margin-bottom:18px;">
+    All Registered Users
+</div>
+
+<div class="table-box">
+
+    
+
+    <table>
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Joined</th>
+        <th>Status</th>
+        <th></th>
+    </tr>
+
+    {% for u in users %}
+    <tr>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td>{{ u.date_joined|date:"M d, Y" }}</td>
+        <td>
+            {% if u.is_active %}
+                <span class="status-active">Active</span>
+            {% else %}
+                <span class="status-inactive">Inactive</span>
+            {% endif %}
+        </td>
+        <td>
+        <a href="{% url 'admin_user_details' u.id %}" class="arrow-circle">
+    <i class="bi bi-arrow-right"></i>
+</a>
+</td>
+
+
+        
+    </tr>
+    {% endfor %}
+</table>
+
+
+</div>
+
+{% endblock %}

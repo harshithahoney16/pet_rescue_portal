@@ -1,0 +1,116 @@
+{% extends "admin_base.html" %}
+{% block title %}Lost Reports{% endblock %}
+{% block lost_active %}active{% endblock %}
+{% block heading %}Lost Pet Reports{% endblock %}
+{% load static %}
+
+{% block content %}
+<style>
+.card-box{
+    display:flex;background:white;padding:22px;
+    border-radius:18px;margin-bottom:30px;
+    box-shadow:0 6px 18px rgba(0,0,0,.07);
+    gap:30px;position:relative;min-height:250px;
+    font-family:'Segoe UI',sans-serif;
+}
+.card-box img{
+    width:360px;height:230px;border-radius:14px;object-fit:cover;
+}
+.badge-status{
+    position:absolute;right:25px;top:20px;font-size:13px;
+    padding:9px 18px;border-radius:40px;font-weight:700;color:white;
+    background:#d80e0e; /* LOST RED */
+}
+.title{
+    font-size:24px;font-weight:700;margin-bottom:6px;color:#2c2c2c;
+}
+.sub-type{opacity:.55;font-weight:500;margin-left:6px;font-size:16px;}
+
+.inline-tags span{
+    background:#f3ebd3;padding:5px 12px;border-radius:50px;
+    font-size:12px;margin-right:6px;font-weight:600;color:#4a3b2d;
+}
+
+.row-icon{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;}
+.row-icon i{color:#c3781c;}
+
+.description-text{margin-top:6px;color:#333;}
+.status-line{font-size:16px;margin-top:10px;font-weight:700;}
+
+.status-chip{
+    background:#ffc400;padding:6px 14px;border-radius:25px;
+    font-size:13px;font-weight:700;color:#000;
+}
+
+.action-btns{
+    position:absolute;bottom:22px;right:22px;display:flex;gap:14px;
+}
+.action-btns a{
+    padding:10px 22px;font-size:15px;font-weight:700;
+    border-radius:10px;color:white;text-decoration:none;
+}
+.approve{background:#059c37;}
+.reject{background:#d81515;}
+</style>
+
+
+{% for pet in reports %}
+<div class="card-box">
+
+    <img src="{{ pet.pet_image.url|default:'/static/default.jpg' }}">
+
+    <span class="badge-status">LOST</span>
+
+    <div style="flex:1;">
+
+        <div class="title">{{ pet.pet_name }}
+            <span class="sub-type">({{ pet.breed }})</span>
+        </div>
+
+        <div class="inline-tags">
+            <span>{{ pet.color }}</span>
+            <span>{{ pet.age }} yrs</span>
+            <span>{{ pet.gender }}</span>
+        </div>
+        <div class="row-icon">
+    <i class="bi bi-calendar"></i>{{ pet.lost_date }}
+</div>
+        <div class="row-icon">
+    <i class="bi bi-geo-alt"></i>{{ pet.location }}
+
+    {% if pet.location_url %}
+        <span style="opacity:.6;"> • </span>
+        <a href="{{ pet.location_url }}" target="_blank"
+           style="color:#0066ff;font-weight:600;text-decoration:none;">
+            📍Location URL
+        </a>
+    {% else %}
+        <span style="opacity:.6;"> • No Map Available</span>
+    {% endif %}
+</div>
+
+
+
+        <div class="row-icon">
+            <i class="bi bi-telephone"></i>{{ pet.phone }} |
+            <i class="bi bi-envelope"></i>{{ pet.email }}
+        </div>
+
+        <p class="description-text"><b>Description:</b> {{ pet.description }}</p>
+
+        <p class="status-line">Status:
+            <span class="status-chip">{{ pet.status }}</span>
+        </p>
+
+        <div class="action-btns">
+            <a class="approve" href="{% url 'update_lost_status' pet.id 'approve' %}">Approve</a>
+            <a class="reject"  href="{% url 'update_lost_status' pet.id 'reject'  %}">Reject</a>
+        </div>
+
+    </div>
+</div>
+{% empty %}
+<h3 style="text-align:center;margin-top:50px;color:#444;">No Lost Requests</h3>
+{% endfor %}
+
+{% endblock %}

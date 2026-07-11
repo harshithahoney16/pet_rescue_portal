@@ -1,0 +1,26 @@
+{% extends "dashboard.html" %}
+{% block title %}Check Lost Pet Status{% endblock %}
+
+{% block content %}
+<h2>🔍 Check Lost Pet Status</h2>
+
+<form method="get" style="margin-bottom:20px;">
+  <input type="text" name="pet_type" placeholder="Pet Type">
+  <input type="text" name="breed" placeholder="Breed">
+  <input type="text" name="location" placeholder="Location">
+  <button type="submit">Search</button>
+</form>
+
+<hr>
+
+{% for pet in pets %}
+  <div class="pet-card">
+    <img src="{{ pet.image.url }}" width="200">
+    <p><strong>Type:</strong> {{ pet.pet_type }}</p>
+    <p><strong>Breed:</strong> {{ pet.breed }}</p>
+    <p><strong>Found at:</strong> {{ pet.location }}</p>
+  </div>
+{% empty %}
+  <p>No matching found pets.</p>
+{% endfor %}
+{% endblock %}

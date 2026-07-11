@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Report Lost Pet</title>
+
+<style>
+:root {
+    --bg:#fff9f0;
+    --primary:#ffa500;
+    --primary-dark:#cc8400;
+    --secondary:#ffe7b8;
+    --text:#4a3b2d;
+}
+
+/* PAGE BASE */
+body {
+    margin:0;
+    background:var(--bg);
+    font-family:Arial, sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+/* MAIN CONTAINER */
+.container {
+    width:75%;
+    max-width:1180px;
+    background:white;
+    border-radius:18px;
+    box-shadow:0 4px 25px rgba(0,0,0,0.12);
+    display:flex;
+    overflow:hidden;
+    border:5px solid var(--primary);
+}
+
+/* LEFT — FORM SECTION */
+.form-section {
+    width:65%;
+    padding:25px 35px;
+}
+
+h2 {
+    font-size:30px;
+    font-weight:900;
+    color:var(--primary-dark);
+    margin-bottom:8px;
+}
+
+.subtitle {
+    font-size:15px;
+    opacity:.75;
+    margin-bottom:25px;
+}
+
+/* COMPACT 4-COLUMN GRID */
+.form-grid {
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px 18px;
+    margin-bottom:15px;
+}
+
+/* INPUT STYLES */
+input, textarea, select {
+    width:100%;
+    padding:6px;
+    height:34px;
+    border-radius:8px;
+    border:2px solid var(--primary);
+    background:var(--secondary);
+    font-size:14px;
+}
+
+textarea {
+    height:70px;
+    resize:vertical;
+}
+
+label {
+    font-size:14px;
+    font-weight:600;
+}
+
+input:focus, textarea:focus, select:focus {
+    background:#ffefcc;
+    border-color:var(--primary-dark);
+    outline:none;
+}
+
+/* SUBMIT BUTTON */
+button {
+    width:100%;
+    padding:8px;
+    background:var(--primary);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:17px;
+    font-weight:800;
+    cursor:pointer;
+    margin-top:15px;
+}
+button:hover {
+    background:var(--primary-dark);
+}
+
+/* RIGHT — IMAGE */
+.image-section {
+    width:35%;
+}
+.image-section img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT — FORM -->
+    <div class="form-section">
+
+        <h2>Report Lost Pet</h2>
+        <p class="subtitle">Please provide details, we help others identify and find your pet.</p>
+
+        <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div style="grid-column: 1 / -1;">
+    <label>Owner Name</label>
+    <input type="text" name="owner_name"
+           placeholder="Your full name" required>
+</div>
+
+        <div class="form-grid">
+
+    <div>
+        <label>Pet Name</label>
+        <input type="text" name="pet_name" placeholder="e.g., Coco" required>
+    </div>
+
+    <div>
+        <label>Species</label>
+        <input type="text" name="pet_type" placeholder="e.g., Dog / Cat / Bird" required>
+    </div>
+
+    <div>
+        <label>Breed</label>
+        <input type="text" name="breed" placeholder="e.g., Labrador">
+    </div>
+
+    <div>
+        <label>Color</label>
+        <input type="text" name="color" placeholder="e.g., Brown & White">
+    </div>
+
+    <div>
+        <label>Age</label>
+        <input type="text" name="age" placeholder="e.g., 2 years">
+    </div>
+
+    <div>
+        <label>Gender</label>
+        <select name="gender">
+            <option disabled selected>Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Vaccinated</label>
+        <select name="vaccinated">
+            <option disabled selected>Select</option>
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Weight</label>
+        <input type="text" name="weight" placeholder="e.g., 5 kg">
+    </div>
+
+    <div>
+        <label>Health Status</label>
+        <input type="text" name="health_status" placeholder="e.g., Healthy / Injured">
+    </div>
+
+    <div>
+        <label>Date Lost</label>
+        <input type="date" name="lost_date">
+    </div>
+
+    <div>
+        <label>Phone</label>
+        <input type="text" name="phone" placeholder="e.g., 9876543210">
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input type="email" name="email" placeholder="e.g., example@gmail.com">
+    </div>
+
+</div>
+ <!-- END GRID -->
+
+        <label>Last Seen Location</label>
+        <input type="text" name="location">
+
+        <label style="margin-top:10px;">Google Map URL</label>
+        <input type="text"
+       name="location_url"
+       placeholder="Paste Google Maps link OR enter latitude, longitude">
+
+
+        <button type="button" onclick="getLostLocationUrl()"
+            style="margin:6px 0; background:#0099ff; color:white; border:none;
+                   padding:6px 10px; border-radius:6px; cursor:pointer; font-size:13px;">
+            📍 Detect My Location
+        </button>
+
+        <label>Description</label>
+        <textarea name="description" placeholder="Color, collar, scars, behavior..."></textarea>
+
+        <label>Upload Pet Image</label>
+        <input type="file" name="pet_image">
+
+        <button type="submit">Submit Lost Report</button>
+
+        </form>
+
+    </div>
+
+    <!-- RIGHT — IMAGE -->
+    <div class="image-section">
+        <img src="https://cdn.britannica.com/35/3635-050-96241EC1/Scarlet-macaw-ara-macao.jpg">
+    </div>
+
+</div>
+
+<script>
+function getLostLocationUrl() {
+    if (!navigator.geolocation) {
+        alert("Your browser does not support location access.");
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        document.querySelector("input[name='location_url']").value =
+            `https://www.google.com/maps?q=${lat},${lng}`;
+    }, function(err) {
+        if (err.code === 1) alert("❗ Location permission denied.");
+        else alert("⚠ Unable to get location, try again.");
+    });
+}
+</script>
+
+</body>
+</html>

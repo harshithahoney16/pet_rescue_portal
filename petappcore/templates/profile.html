@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile - PetSphere</title>
+
+<style>
+:root {
+    --primary:#ffa600;
+    --light:#fff4d4;
+    --icon-bg:#ffcc70;
+    --text:#2e2100;
+    --bg:#fff8e1;
+}
+body{
+    margin:0;
+    background:var(--bg);
+    font-family: "Segoe UI",sans-serif;
+}
+.profile-wrapper{
+    width:90%;
+    max-width:1100px;
+    margin:45px auto;
+    background:white;
+    border-radius:22px;
+    box-shadow:0 6px 22px rgba(0,0,0,.10);
+    overflow:hidden;
+}
+
+/* TOP HEADER */
+.profile-header{
+    background:var(--primary);
+    padding:45px;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.avatar{
+    width:95px;
+    height:95px;
+    background:white;
+    color:#d76a00;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:38px;
+    font-weight:700;
+}
+.verified{
+    background:white;
+    color:#b85c00;
+    padding:8px 18px;
+    border-radius:20px;
+    font-weight:600;
+}
+
+/* SECTION HEADING */
+.section-title{
+    font-size:22px;
+    font-weight:700;
+    margin:35px 30px 15px;
+    color:#4d3500;
+}
+
+/* GRID BLOCKS */
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:22px;
+    padding:0 30px;
+}
+.info-card{
+    background:var(--light);
+    border-radius:18px;
+    padding:18px 20px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+/* ICON */
+.icon-box{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:var(--icon-bg);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.icon-box svg{
+    width:22px;
+    height:22px;
+    stroke:#8a4300;
+    stroke-width:2.2;
+}
+
+/* TEXT */
+.detail-title{
+    font-size:12px;
+    color:#8a6300;
+    font-weight:600;
+    text-transform:uppercase;
+}
+.detail-value{
+    font-size:18px;
+    font-weight:700;
+    margin-top:4px;
+    color:#3b2a00;
+}
+
+/* BUTTON */
+.btn-area{
+    display:flex;
+    justify-content:center;
+    padding:35px;
+}
+.btn{
+    background:var(--primary);
+    color:white;
+    font-size:17px;
+    padding:13px 40px;
+    border:none;
+    border-radius:12px;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="profile-wrapper">
+
+    <!-- HEADER -->
+    <div class="profile-header">
+        <div style="display:flex;align-items:center;gap:22px">
+            <div class="avatar">
+                {{ profile.full_name|default:user.username|first|upper }}
+            </div>
+            <div>
+                <h2 style="margin:0">
+                    {{ profile.full_name|default:user.username }}
+                </h2>
+                <p style="margin:2px 0 0;">{{ user.email }}</p>
+            </div>
+        </div>
+        <div class="verified">✔ Verified Member</div>
+    </div>
+
+    <!-- PERSONAL INFO -->
+    <div class="section-title">Personal Information</div>
+    <div class="info-grid">
+
+        <!-- FULL NAME -->
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="7" r="4"/>
+                    <path d="M4 20c1-5 6-6 8-6s7 1 8 6"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">Full Name</div>
+                <div class="detail-value">
+                    {{ profile.full_name|default:user.username }}
+                </div>
+            </div>
+        </div>
+
+        <!-- GENDER -->
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">Gender</div>
+                <div class="detail-value">
+                    {{ profile.gender|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+        <!-- AGE -->
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">Age</div>
+                <div class="detail-value">
+                    {% if profile.age %}
+                        {{ profile.age }} years
+                    {% else %}
+                        Not provided
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- PHONE -->
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <path d="M5 4l3 1 2 5-2 2c1.5 3 3.5 5 6 6l2-2 5 2 1 3c-3 2-6 3-9 1s-7-5-9-9-1-6 1-9z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">Phone</div>
+                <div class="detail-value">
+                    {{ profile.phone|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOCATION -->
+    <div class="section-title" style="margin-top:40px;">Location Details</div>
+    <div class="info-grid">
+
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M2 12h20"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">Country</div>
+                <div class="detail-value">
+                    {{ profile.country|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <path d="M12 22s8-7 8-12a8 8 0 10-16 0c0 5 8 12 8 12z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">State</div>
+                <div class="detail-value">
+                    {{ profile.state|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <rect x="5" y="3" width="14" height="18" rx="2"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">District</div>
+                <div class="detail-value">
+                    {{ profile.district|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+        <div class="info-card">
+            <div class="icon-box">
+                <svg fill="none" viewBox="0 0 24 24">
+                    <path d="M4 9h16M4 15h16M9 4v16M15 4v16"/>
+                </svg>
+            </div>
+            <div>
+                <div class="detail-title">PIN Code</div>
+                <div class="detail-value">
+                    {{ profile.pincode|default:"Not provided" }}
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BUTTON -->
+    <div class="btn-area">
+        <a href="{% url 'change_password' %}">
+            <button class="btn">Change Password</button>
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

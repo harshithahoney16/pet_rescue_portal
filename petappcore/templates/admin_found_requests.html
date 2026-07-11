@@ -1,0 +1,100 @@
+{% extends "admin_base.html" %}
+{% block title %}Found Reports{% endblock %}
+{% block found_active %}active{% endblock %}
+{% block heading %}Found Pet Reports{% endblock %}
+{% load static %}
+
+{% block content %}
+<style>
+/* SAME UI AS LOST — ONLY BADGE COLOR CHANGED */
+.card-box{display:flex;background:white;padding:22px;border-radius:18px;
+box-shadow:0 6px 18px rgba(0,0,0,.07);margin-bottom:30px;gap:30px;position:relative;}
+.card-box img{width:360px;height:230px;border-radius:14px;object-fit:cover;}
+
+.badge-status{
+    position:absolute;right:25px;top:20px;font-size:13px;
+    padding:9px 18px;border-radius:40px;font-weight:700;color:white;
+    background:#007bff; /* FOUND BLUE */
+}
+
+.title{font-size:24px;font-weight:700;margin-bottom:6px;color:#2c2c2c;}
+.sub-type{opacity:.55;font-weight:500;margin-left:6px;font-size:16px;}
+
+.inline-tags span{background:#f3ebd3;padding:5px 12px;border-radius:50px;
+font-size:12px;margin-right:6px;font-weight:600;color:#4a3b2d;}
+
+.row-icon{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:15px;}
+.row-icon i{color:#c3781c;}
+
+.status-chip{background:#ffc400;padding:6px 14px;border-radius:25px;font-size:13px;font-weight:700;}
+
+.action-btns{position:absolute;bottom:22px;right:22px;display:flex;gap:14px;}
+.action-btns button{padding:10px 22px;border-radius:10px;font-size:15px;
+font-weight:700;border:none;color:white;}
+.approve{background:#059c37;}
+.reject{background:#d81515;}
+</style>
+
+
+{% for pet in reports %}
+<div class="card-box">
+
+    <img src="{{ pet.image.url|default:'/static/default.jpg' }}">
+
+    <span class="badge-status">FOUND</span>
+
+    <div style="flex:1;">
+
+        <div class="title">{{ pet.species }}
+            <span class="sub-type">({{ pet.breed }})</span>
+        </div>
+
+        <div class="inline-tags">
+            <span>{{ pet.color }}</span>
+            <span>{{ pet.age }} yrs</span>
+            <span>{{ pet.gender }}</span>
+        </div>
+        <div class="row-icon">
+    <i class="bi bi-calendar"></i>{{ pet.found_date }}
+</div>
+        <div class="row-icon">
+    <i class="bi bi-geo-alt"></i>{{ pet.location }}
+
+    {% if pet.location_url %}
+        • <a href="{{ pet.location_url }}" target="_blank"
+             style="color:#0066ff;font-weight:700;text-decoration:none;">
+            📍 Location URL
+        </a>
+    {% else %}
+        • <span style="opacity:.6;">No Map</span>
+    {% endif %}
+</div>
+
+        
+
+
+        <div class="row-icon">
+            <i class="bi bi-telephone"></i>{{ pet.contact_number }} |
+            <i class="bi bi-envelope"></i>{{ pet.contact_email }}
+        </div>
+
+        <p><b>Description:</b> {{ pet.description }}</p>
+
+        <p class="status-line">Status:
+            <span class="status-chip">{{ pet.status }}</span>
+        </p>
+
+        <div class="action-btns">
+            <form method="POST">{% csrf_token %}
+                <input type="hidden" name="id" value="{{ pet.id }}">
+                <button class="approve" name="action" value="Approved">Approve</button>
+                <button class="reject" name="action" value="Rejected">Reject</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% empty %}
+<h3 style="text-align:center;margin-top:50px;color:#444;">No Found Requests</h3>
+{% endfor %}
+{% endblock %}

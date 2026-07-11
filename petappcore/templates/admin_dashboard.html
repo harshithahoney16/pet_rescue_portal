@@ -1,0 +1,149 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+{% block dash_active %}active{% endblock %}
+{% block heading %}Dashboard Overview{% endblock %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+.card-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+    margin-top:20px;
+    margin-bottom:50px;
+}
+.card{
+    background:white;
+    border-radius:18px;
+    padding:28px;
+    box-shadow:0 6px 20px rgba(0,0,0,.12);
+    border-top:6px solid #ffb84d;
+    transition:.28s;
+}
+.card:hover{transform:translateY(-6px);}
+.card-icon{font-size:27px;color:#ff9800;margin-bottom:10px;}
+.card-title{font-size:15px;color:#614525;font-weight:600;}
+.card-value{font-size:33px;font-weight:700;color:#4a3311;}
+.section-title{
+    color:#5b3b17;
+    margin-top:60px;
+    margin-bottom:25px;
+    font-size:24px;
+    font-weight:700;
+}
+.chart-panel{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    width:430px;
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+</style>
+
+<!-- ================= SUMMARY ================= -->
+<div class="card-grid">
+
+    <div class="card" onclick="location.href='{% url 'admin_users' %}'" style="cursor:pointer;">
+        <div class="card-icon"><i class="bi bi-people-fill"></i></div>
+        <div class="card-title">Total Users</div>
+        <div class="card-value">{{ total_users }}</div>
+    </div>
+
+    <a href="{% url 'approved_reports' %}" style="text-decoration:none;color:inherit;">
+        <div class="card" style="cursor:pointer;">
+            <div class="card-icon" style="font-size:32px;">🐾</div>
+            <div class="card-title">Total Pets</div>
+            <div class="card-value">{{ total_pets }}</div>
+        </div>
+    </a>
+
+    <a href="{% url 'admin_pending_tasks' %}" style="text-decoration:none;color:inherit;">
+        <div class="card" style="cursor:pointer;">
+            <div class="card-icon"><i class="bi bi-clipboard-check"></i></div>
+            <div class="card-title">Pending Reports</div>
+            <div class="card-value">{{ pending_reports }}</div>
+        </div>
+    </a>
+
+</div>
+
+<!-- ================= RESOLVED CASES ================= -->
+<div class="card-grid">
+    <div class="card">
+        <div class="card-icon"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="card-title">Resolved Cases</div>
+        <div class="card-value">{{ resolved_cases }}</div>
+    </div>
+</div>
+
+<!-- ================= PETS OVERVIEW ================= -->
+<div class="section-title">Pets Overview</div>
+
+<div class="card-grid">
+
+    <div class="card">
+        <div class="card-icon"><i class="bi bi-search"></i></div>
+        <div class="card-title">Lost Pets</div>
+        <div class="card-value">{{ approved_lost_pets }}</div>
+    </div>
+
+    <div class="card">
+        <div class="card-icon"><i class="bi bi-binoculars"></i></div>
+        <div class="card-title">Found Pets</div>
+        <div class="card-value">{{ approved_found_pets }}</div>
+    </div>
+
+    <div class="card">
+        <div class="card-icon"><i class="bi bi-heart-fill"></i></div>
+        <div class="card-title">Adopted Pets</div>
+        <div class="card-value">
+            {{ approved_adoption_pets }}
+        </div>
+    </div>
+
+</div>
+
+<!-- ================= CHARTS ================= -->
+<div class="section-title">Pet Status Distribution</div>
+
+<div style="display:flex;gap:30px;flex-wrap:wrap;">
+
+    <div class="chart-panel">
+        <h3>Pet Status - Bar Graph</h3>
+        <canvas id="statusBar"></canvas>
+    </div>
+
+    <div class="chart-panel">
+        <h3>Pet Status - Pie Chart</h3>
+        <canvas id="statusPie"></canvas>
+    </div>
+
+</div>
+
+<script>
+const labels=["Adopted","Found","Lost"];
+const data=[
+    {{ approved_adoption_pets }},
+    {{ approved_found_pets }},
+    {{ approved_lost_pets }}
+];
+const colors=["#1cc45f","#ffb52e","#e63946"];
+
+new Chart(statusBar,{
+    type:"bar",
+    data:{labels,datasets:[{data,backgroundColor:colors,borderRadius:6}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}
+});
+
+new Chart(statusPie,{
+    type:"doughnut",
+    data:{labels,datasets:[{data,backgroundColor:colors}]},
+    options:{cutout:"55%"}
+});
+</script>
+
+{% endblock %}

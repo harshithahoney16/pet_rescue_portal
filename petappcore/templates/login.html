@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
+    <meta charset="UTF-8">
+    <title>Login - PetSphere</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- BACK BUTTON FIX -->
+    <script>
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, null, window.location.href);
+            window.onpopstate = function () {
+                window.location.href = "/";
+            };
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg: #fff9f0;
+            --fg: #4a3b2d;
+            --primary: #ffa500;
+            --secondary: #ffe7b8;
+            --accent: #c27020;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center" style="background: var(--bg); color: var(--fg);">
+
+    <div class="w-full max-w-6xl flex items-center justify-between bg-white rounded-2xl shadow-xl p-10 fade-in"
+        style="border-top: 5px solid var(--primary);">
+
+        <!-- LEFT - LOGIN FORM -->
+        <div class="w-1/2 pr-10">
+
+           <h2 class="text-3xl font-bold mb-2" style="color: var(--accent);">
+                Welcome Back to PetSphere
+            </h2>
+            <p class="mb-6 text-sm">
+                 Sign in to continue your journey with PetSphere
+            </p>
+
+
+            {% if error %}
+            <p class="text-red-600 font-semibold mb-4">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <label class="font-semibold text-sm">Email</label>
+                <input type="email" name="email" required
+                    class="w-full p-3 mt-1 mb-5 rounded-lg border focus:outline-none"
+                    placeholder="Enter your email"
+                    style="border-color: var(--primary); background: var(--secondary);">
+
+                <label class="font-semibold text-sm">Password</label>
+                <input type="password" name="password" required
+                    class="w-full p-3 mt-1 mb-6 rounded-lg border focus:outline-none"
+                    placeholder="Enter password"
+                    style="border-color: var(--primary); background: var(--secondary);">
+
+                <button type="submit"
+                    class="w-full p-3 font-bold rounded-lg shadow-md transition hover:scale-[1.02]"
+                    style="background: var(--primary); color: white;">
+                    Login
+                </button>
+
+                <p class="text-center mt-4 text-sm">
+                    Don’t have an account?
+                    <a href="/signup/" class="font-semibold hover:underline" style="color: var(--accent);">
+                        Create New Account
+                    </a>
+                </p>
+            </form>
+        </div>
+
+        <!-- RIGHT SIDE IMAGE -->
+        <div class="w-1/2">
+            <img src="https://i.pinimg.com/736x/ba/91/8a/ba918a72bce479c5aae3c8d41afe7d00.jpg"
+                 class="w-full h-[500px] object-cover rounded-xl shadow-md" alt="Pet Image">
+        </div>
+
+    </div>
+</body>
+</html>

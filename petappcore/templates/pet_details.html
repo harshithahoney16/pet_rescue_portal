@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pet Details - PetSphere</title>
+
+<style>
+:root{
+    --primary:#ffa500;
+    --primary-dark:#cc8400;
+    --bg:#fff9f0;
+    --text:#3b2a1e;
+}
+body{
+    margin:0;
+    padding:30px 0;
+    background:var(--bg);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* MAIN CARD (REDUCED SIZE) */
+.card{
+    width:30%;
+    background:white;
+    margin:auto;
+    border-radius:18px;
+    box-shadow:0 8px 25px rgba(0,0,0,.12);
+    overflow:hidden;
+}
+
+/* TAGS */
+.badges{
+    position:absolute;
+    margin:12px;
+    display:flex;
+    gap:8px;
+}
+.badge{
+    padding:4px 10px;
+    font-size:12px;
+    border-radius:16px;
+    font-weight:600;
+    background:white;
+}
+.badge.found{ background:#4caf50; color:white; }
+.badge.lost{ background:#d32f2f; color:white; }
+.badge.adopt{ background:#0277bd; color:white; }
+.badge.status{ background:#eee; }
+
+/* IMAGE (SMALLER) */
+.hero{
+    position:relative;
+}
+.hero img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+}
+
+/* TITLE */
+.title-box{
+    padding:18px;
+    text-align:center;
+}
+.title-box h1{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+    color:var(--text);
+}
+.title-box p{
+    margin-top:4px;
+    font-size:14px;
+    opacity:.7;
+}
+
+/* FEATURES */
+.features{
+    display:flex;
+    justify-content:space-around;
+    padding:14px 0;
+    border-top:1px solid #eee;
+    border-bottom:1px solid #eee;
+}
+.feature{
+    text-align:center;
+}
+.feature-name{
+    font-size:12px;
+    color:var(--primary-dark);
+}
+.feature-value{
+    font-size:15px;
+    font-weight:700;
+}
+
+/* INFO SECTION */
+.info-section{
+    padding:18px;
+}
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin:8px 0;
+    font-size:14px;
+}
+.row b{
+    color:var(--text);
+}
+
+.desc-title{
+    margin-top:20px;
+    font-size:15px;
+    font-weight:700;
+    color:var(--text);
+}
+.desc{
+    margin-top:8px;
+    font-size:13px;
+    line-height:1.35;
+}
+
+
+
+/* CONTACT BOX */
+.contact-box{
+    background:#f7f4ef;
+    padding:12px;
+    border-radius:10px;
+    margin-top:15px;
+}
+.contact-box b{
+    font-size:14px;
+}
+
+/* DESCRIPTION */
+.desc{
+    margin-top:15px;
+    font-size:14px;
+    line-height:1.4;
+}
+.lost-species{
+    font-weight:500;
+    color:#808080;
+    font-size:18px;
+}
+
+/* BUTTON (SMALLER) */
+.action-btn{
+    display:block;
+    width:85%;
+    margin:20px auto;
+    padding:10px 0;
+    background:var(--primary);
+    color:white;
+    font-size:16px;
+    font-weight:700;
+    border-radius:10px;
+    text-align:center;
+    text-decoration:none;
+    transition:.25s;
+}
+.action-btn:hover{
+    background:var(--primary-dark);
+    transform:scale(1.02);
+}
+</style>
+</head>
+
+<body>
+
+
+<div class="card">
+
+    <!-- IMAGE + TAGS -->
+    <div class="hero">
+
+        <div class="badges">
+            {% if pet_type == "found" %}
+                <div class="badge found">Found</div>
+            {% elif pet_type == "lost" %}
+                <div class="badge lost">Lost</div>
+            {% elif pet_type == "adopt" %}
+                <div class="badge adopt">Adoption</div>
+            {% endif %}
+            <div class="badge status">{{ pet.status }}</div>
+        </div>
+
+        {% if pet_type == "lost" and pet.pet_image %}
+            <img src="{{ pet.pet_image.url }}">
+        {% elif pet_type == "found" and pet.image %}
+            <img src="{{ pet.image.url }}">
+        {% else %}
+            <img src="{{ pet.image.url }}">
+        {% endif %}
+    </div>
+
+    <!-- NAME -->
+    <div class="title-box">
+        <h1>
+    {% if pet_type == "lost" %}
+        {{ pet.pet_name }} .
+        <span class="lost-species">{{ pet.pet_type }}</span>
+    {% else %}
+        {{ pet.species }}
+    {% endif %}
+</h1>
+
+
+<p>
+    {% if pet_type == "lost" %}
+        {{ pet.breed }} . {{ pet.gender }}
+    {% else %}
+        {{ pet.breed }} • {{ pet.gender }}
+    {% endif %}
+</p>
+
+
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features">
+        <div class="feature">
+            <div class="feature-name">Age</div>
+            <div class="feature-value">{{ pet.age }}</div>
+        </div>
+        <div class="feature">
+            <div class="feature-name">Weight</div>
+            <div class="feature-value">{{ pet.weight }}</div>
+        </div>
+        <div class="feature">
+            <div class="feature-name">Health</div>
+            <div class="feature-value">{{ pet.health_status }}</div>
+        </div>
+    </div>
+
+    <!-- INFO SECTION -->
+    <div class="info-section">
+        <div class="row"><b>Pet ID:</b> #PET{{ pet.id }}</div>
+
+        <div class="row"><b>Color:</b> {{ pet.color }}</div>
+        <div class="row"><b>Breed:</b> {{ pet.breed }}</div>
+        
+        {% if pet_type == "lost" and pet.vaccinated %}
+        <div class="row">
+            <b>Vaccinated:</b> {{ pet.vaccinated }}
+</div>
+{% endif %}
+
+        <div class="row">
+    <b>Location:</b>
+    <span>{{ pet.location }}</span>
+</div>
+
+        <div class="row">
+    <b>Location URL:</b>
+    {% if pet.location_url %}
+        <a href="{{ pet.location_url }}" target="_blank"
+           style="color:#ffa500; font-weight:600;">
+            View on Google Maps
+        </a>
+    {% else %}
+        <span style="color:#999;">Not available</span>
+    {% endif %}
+</div>
+
+        
+
+
+        <div class="row">
+            <b>Date(Found/Lost):</b>
+            {% if pet_type == "lost" %}
+                {{ pet.lost_date|date:"M d, Y" }}
+            {% else %}
+                {{ pet.found_date|date:"M d, Y" }}
+            {% endif %}
+        </div>
+        {% if pet_type == "lost" or pet_type == "found" %}
+<div class="row">
+    <b>Reported on:</b>
+    {% if pet_type == "lost" %}
+        {{ pet.reported_on|date:"M d, Y, h:i A" }}
+    {% else %}
+        {{ pet.created_on|date:"M d, Y, h:i A" }}
+    {% endif %}
+</div>
+{% endif %}
+
+
+        <!-- CONTACT -->
+        <div class="contact-box">
+    <b>Contact Information</b><br><br>
+    Contact details will be shared after admin-approved chat request.
+</div>
+
+
+        <!-- DESCRIPTION -->
+        <h3 class="desc-title">Description</h3>
+        <div class="desc">{{ pet.description }}</div>
+    </div>
+
+    <!-- BUTTON -->
+    {% if pet_type == "found" %}
+    <button type="button" class="action-btn" onclick="openRequestModal()">
+        This Is My Pet
+    </button>
+{% elif pet_type == "lost" %}
+    <button type="button" class="action-btn" onclick="openRequestModal()">
+        I Found This Pet
+    </button>
+{% elif pet_type == "adopt" %}
+    <a class="action-btn" href="{% url 'adopt_request' pet.pk %}">
+        Apply for Adoption
+    </a>
+{% endif %}
+
+
+</div>
+<!-- REQUEST MODAL -->
+<div id="requestModal" style="display:none; position:fixed; inset:0;
+     background:rgba(0,0,0,0.45); z-index:1000;
+     align-items:center; justify-content:center;">
+
+    <div style="background:white; width:90%; max-width:420px; padding:22px;
+         border-radius:14px; box-shadow:0 10px 30px rgba(0,0,0,0.2);">
+
+        <h2 style="margin-top:0;">Send Request</h2>
+
+        <p style="font-size:14px; color:#555;">
+            Your request will be sent to the admin. After admin approval,
+            you can start messaging the user.
+        </p>
+
+        <form method="POST"
+              action="{% url 'send_claim_request' pet_type pet.id %}">
+            {% csrf_token %}
+
+            <textarea name="message"
+                placeholder="Write something (optional)"
+                style="width:100%; height:90px; padding:10px;
+                       border-radius:8px; border:1px solid #ccc; resize:none; box-sizing:border-box;"></textarea>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:14px;">
+                <button type="button"
+                        onclick="closeRequestModal()"
+                        style="background:#ddd; padding:8px 16px;
+                               border-radius:8px; border:none; font-weight:600;">
+                    Cancel
+                </button>
+
+                <button type="submit"
+                        style="background:#ffa500; color:white;
+                               padding:8px 18px; border-radius:8px;
+                               border:none; font-weight:700;">
+                    Send Request
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+<script>
+function openRequestModal(){
+    document.getElementById("requestModal").style.display = "flex";
+}
+
+function closeRequestModal(){
+    document.getElementById("requestModal").style.display = "none";
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,300 @@
+{% extends "admin_base.html" %}
+{% block title %}Chat Requests{% endblock %}
+
+
+{% block heading %}
+    <span style="margin-left:10px;">Chat Room Requests</span>
+{% endblock %}
+{% block content %}
+
+
+
+<style>
+/* ===== TABLE ===== */
+.admin-table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    table-layout: fixed;
+    box-shadow:0 8px 22px rgba(0,0,0,.06);
+}
+/* ===== COLUMN WIDTH BALANCE ===== */
+.admin-table th:nth-child(1),
+.admin-table td:nth-child(1){ width: 18%; }  /* Requester */
+
+.admin-table th:nth-child(2),
+.admin-table td:nth-child(2){ width: 18%; }  /* Reporter */
+
+.admin-table th:nth-child(3),
+.admin-table td:nth-child(3){ width: 16%; }  /* Linked Pet */
+
+.admin-table th:nth-child(4),
+.admin-table td:nth-child(4){ width: 16%; }  /* Room Details */
+
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5){ width: 12%; }  /* Date */
+
+.admin-table th:nth-child(6),
+.admin-table td:nth-child(6){ width: 10%; text-align:center; }  /* Status */
+
+.admin-table th:nth-child(7),
+.admin-table td:nth-child(7){ width: 10%; text-align:center; }  /* Actions */
+
+
+.admin-table th,
+.admin-table td{
+    padding:16px 18px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    vertical-align:middle;
+}
+
+.admin-table th{
+    background:#fafafa;
+    font-size:13px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:#555;
+}
+
+/* ===== AVATAR ===== */
+.avatar{
+    width:40px;
+    height:40px;
+    background:#e9ecef;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    color:#555;
+}
+
+/* ===== STATUS BADGES ===== */
+.status{
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:700;
+    display:inline-block;
+}
+
+.status.pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.status.approved{
+    background:#d4edda;
+    color:#155724;
+}
+
+.status.rejected{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+/* ===== PET TAG ===== */
+.pet-tag{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.pet-lost{ background:#fdecea; color:#c62828; }
+.pet-found{ background:#e3f2fd; color:#1565c0; }
+
+/* ===== ACTION BUTTONS ===== */
+.actions{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+}
+
+
+.btn{
+    padding:7px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:700;
+    text-decoration:none;
+    border:none;
+    cursor:pointer;
+}
+
+
+.actions-cell{
+    text-align:center;          /* ✅ centers inline elements */
+    vertical-align:middle;      /* ✅ vertical alignment */
+}
+
+/* View (light grey) */
+.btn-view{
+    background:#f1f1f1;
+    color:#444;
+    border:1px solid #ddd;
+}
+
+/* Open Chat (orange / primary) */
+.btn-chat{
+    background:#ffa500;
+    color:white;
+    border:none;
+}
+
+/* Hover effects */
+.btn-view:hover{
+    background:#e5e5e5;
+}
+
+.btn-chat:hover{
+    background:#e69500;
+}
+
+</style>
+
+<table class="admin-table">
+    <table class="admin-table">
+
+    <!-- ✅ FORCE EQUAL COLUMN WIDTHS -->
+    <colgroup>
+        <col style="width:14%">
+        <col style="width:14%">
+        <col style="width:14%">
+        <col style="width:14%">
+        <col style="width:14%">
+        <col style="width:15%">
+        <col style="width:15%">
+    </colgroup>
+
+<thead>
+<tr>
+    <th>Requester</th>
+    <th>Reporter</th>
+    <th>Linked Pet</th>
+    <th>Room Details</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for r in requests %}
+<tr>
+
+<!-- REQUESTER -->
+<td>
+    <div style="display:flex; align-items:center; gap:12px;">
+        <div class="avatar">{{ r.requester.username|first|upper }}</div>
+        <div>
+            <b>{{ r.requester.username }}</b><br>
+            <small style="color:#777;">{{ r.requester.email }}</small>
+        </div>
+    </div>
+</td>
+<!-- REPORTER -->
+<td>
+    {% if r.lost_pet %}
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="avatar">
+                {{ r.lost_pet.user.username|first|upper }}
+            </div>
+            <div>
+                <b>{{ r.lost_pet.user.username }}</b><br>
+                <small style="color:#777;">
+                    {{ r.lost_pet.user.email }}
+                </small>
+            </div>
+        </div>
+    {% else %}
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div class="avatar">
+                {{ r.found_pet.user.username|first|upper }}
+            </div>
+            <div>
+                <b>{{ r.found_pet.user.username }}</b><br>
+                <small style="color:#777;">
+                    {{ r.found_pet.user.email }}
+                </small>
+            </div>
+        </div>
+    {% endif %}
+</td>
+
+
+<!-- PET -->
+<td>
+{% if r.lost_pet %}
+    <b>{{ r.lost_pet.pet_name }}</b><br>
+    <small style="color:#777;">Pet ID: {{ r.lost_pet.id }}</small><br>
+    <span class="pet-tag pet-lost">Lost Pet</span>
+{% else %}
+    <b>{{ r.found_pet.species }}</b><br>
+    <small style="color:#777;">Pet ID: {{ r.found_pet.id }}</small><br>
+    <span class="pet-tag pet-found">Found Pet</span>
+{% endif %}
+</td>
+
+
+
+
+<!-- ROOM DETAILS -->
+<td>
+{% if r.request_type == "lost" %}
+    Found – <b>{{ r.lost_pet.pet_name }}</b>
+{% else %}
+    Claim – <b>{{ r.found_pet.species }}</b>
+{% endif %}
+</td>
+
+<!-- DATE -->
+<td>{{ r.created_on|date:"M d, Y" }}</td>
+
+<!-- STATUS -->
+<td>
+
+    {% if r.chat_status == "CLOSED" %}
+        <span class="status rejected">Closed</span>
+    {% elif r.status == "Approved" %}
+        <span class="status approved">Approved</span>
+    {% else %}
+        <span class="status pending">Pending</span>
+    {% endif %}
+
+
+</td>
+
+<!-- ACTIONS -->
+<td class="actions-cell">
+    {% if r.status == "Approved" %}
+        <a href="{% url 'chat_room' r.id %}"
+           class="btn btn-chat">
+            Open Chat
+        </a>
+    {% else %}
+        <a href="{% url 'admin_chat_request_detail' r.id %}"
+           class="btn btn-view">
+            View
+        </a>
+    {% endif %}
+</td>
+
+
+
+</tr>
+{% empty %}
+<tr>
+<td colspan="6" style="text-align:center; padding:30px; color:#777;">
+    No chat requests yet
+</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}

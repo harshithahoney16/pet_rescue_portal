@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Admin Registration</title>
+
+<style>
+:root {
+    --bg:#fff9f0;
+    --primary:#ffa500;
+    --primary-dark:#cc8400;
+    --secondary:#ffe7b8;
+    --text:#4a3b2d;
+}
+
+body{
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* MAIN CONTAINER */
+.container {
+    width:420px;
+    background:white;
+    margin:60px auto;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.15);
+    border-top:6px solid var(--primary);
+}
+
+/* HEADING */
+h2{
+    text-align:center;
+    font-size:28px;
+    font-weight:700;
+    margin-bottom:10px;
+    color:var(--primary-dark);
+}
+
+/* INPUT LABEL */
+label{
+    font-size:14px;
+    font-weight:600;
+}
+
+/* INPUT FIELDS */
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    margin-bottom:15px;
+    border-radius:10px;
+    border:1.8px solid var(--primary);
+    background:var(--secondary);
+    font-size:14px;
+}
+
+input:focus{
+    outline:none;
+    border-color:var(--primary-dark);
+    background:#ffefcc;
+}
+
+/* BUTTON */
+button{
+    width:100%;
+    padding:14px;
+    background:var(--primary);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--primary-dark);
+}
+
+/* ERROR MESSAGE */
+.error{
+    color:red;
+    text-align:center;
+    margin-top:10px;
+    font-weight:bold;
+}
+
+/* LOGIN LINK */
+.note{
+    text-align:center;
+    margin-top:15px;
+    font-size:14px;
+}
+.note a{
+    color:var(--primary-dark);
+    font-weight:bold;
+    text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>Admin Registration</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label>Full Name</label>
+        <input type="text" name="fullname" placeholder="Your full name" required>
+
+        <label>Email</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+
+        <label>Admin Secret Key</label>
+        <input type="password" name="admin_secret" placeholder="Enter admin secret key" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Password" required>
+
+        <label>Confirm Password</label>
+        <input type="password" name="confirm" placeholder="Confirm password" required>
+
+        <button type="submit">Register as Admin</button>
+    </form>
+
+    {% if admin_error %}
+        <p class="error">{{ admin_error }}</p>
+    {% endif %}
+
+    <p class="note">Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+    </p>
+
+</div>
+
+</body>
+</html>

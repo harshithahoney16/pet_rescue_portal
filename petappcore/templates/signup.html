@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<title>Create your account</title>
+{% load static %}
+
+<!-- BACK BUTTON FIX -->
+<script>
+if (window.history && window.history.pushState) {
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.location.href = "/";
+    };
+}
+</script>
+
+<style>
+:root {
+    --bg:#fff9f0;
+    --primary:#ffa500;
+    --primary-dark:#cc8400;
+    --secondary:#ffe7b8;
+    --text:#4a3b2d;
+}
+
+body{
+    margin:0;padding:0;
+    font-family:Arial, sans-serif;
+    background:var(--bg);color:var(--text);
+}
+
+/* MAIN SIGNUP BOX  */
+.container {
+    width:1000px;
+    background:white;
+    margin:60px auto;
+    padding:0;
+    border-radius:20px;
+    display:flex;
+    overflow:hidden;
+    box-shadow:0 4px 25px rgba(0,0,0,0.15);
+    border-top:6px solid var(--primary);
+}
+
+/* LEFT IMAGE */
+.left-img{
+    width:50%;
+    height:auto;
+}
+.left-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* FORM RIGHT SIDE */
+.form-area{
+    width:50%;
+    padding:30px;
+}
+
+h2{
+    text-align:center;
+    font-size:30px;
+    font-weight:700;
+    margin-bottom:6px;
+    color:var(--primary-dark);
+}
+
+.subtitle{
+    text-align:center;margin-bottom:5px;
+    color:#6c5b47;font-size:14px;
+}
+.subtitle a{color:var(--primary-dark);font-weight:bold;text-decoration:none;}
+
+.admin-link{
+    text-align:center;
+    margin-bottom:20px;
+    font-size:14px;
+}
+.admin-link a{
+    color:#444;
+    font-weight:bold;
+    text-decoration:none;
+}
+.admin-link a:hover{
+    color:var(--primary);
+}
+
+label{font-size:14px;font-weight:600;}
+
+input,select{
+    width:100%;padding:5px;
+    border-radius:10px;
+    border:1.5px solid var(--primary);
+    background:var(--secondary);
+    font-size:14px;
+}
+input:focus,select:focus{
+    outline:none;
+    border-color:var(--primary-dark);
+    background:#ffefcc;
+}
+
+.row{ display:flex;gap:15px;margin-bottom:15px; }
+.row div{ flex:1; }
+
+.btn{
+    width:100%;padding:14px;
+    background:var(--primary);
+    border:none;color:white;
+    font-size:17px;
+    border-radius:10px;
+    cursor:pointer;font-weight:700;
+}
+.btn:hover{ background:var(--primary-dark); }
+
+.error{
+    text-align:center;
+    color:red;
+    margin-bottom:15px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT IMAGE -->
+    <div class="left-img">
+        <img src="https://i.pinimg.com/1200x/28/6a/a9/286aa99925f3186fc15680800fa372e6.jpg">
+    </div>
+
+    <!-- RIGHT FORM AREA -->
+    <div class="form-area">
+
+        <h2>Create your account</h2>
+
+        <p class="subtitle">
+            Already a member? <a href="/login/">Log in</a>
+        </p>
+
+        <!-- ⭐ ADDED ADMIN REGISTER LINK HERE -->
+        <p class="admin-link">
+            Are you an Admin? <a href="{% url 'admin_signup' %}">Register as Admin</a>
+        </p>
+
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+        {% csrf_token %}
+
+        <div class="row">
+            <div><label>Full Name</label><input type="text" name="fullname" required></div>
+            <div><label>Username</label><input type="text" name="username" required></div>
+        </div>
+
+        <div class="row">
+            <div><label>Email</label><input type="email" name="email" required></div>
+            <div><label>Phone</label><input type="text" name="phone" required></div>
+        </div>
+
+        <div class="row">
+            <div><label>Age</label><input type="number" name="age" required></div>
+            <div>
+                <label>Gender</label>
+                <select name="gender" required>
+                    <option value="">Select</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div><label>Country</label><input type="text" name="country" required></div>
+            <div><label>State</label><input type="text" name="state" required></div>
+            <div><label>District</label><input type="text" name="district" required></div>
+        </div>
+
+        <div class="row">
+            <div><label>Pin Code</label><input type="text" name="pincode" required></div>
+            <div><label>Password</label><input type="password" name="password" required></div>
+            <div><label>Confirm</label><input type="password" name="confirm" required></div>
+        </div>
+
+        <button class="btn">Create Account</button>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

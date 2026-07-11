@@ -1,0 +1,253 @@
+{% extends "admin_base.html" %}
+{% block title %}Chat Request Details{% endblock %}
+
+{% block heading %}
+<span style="margin-left:10px;">Chat Request Details</span>
+{% endblock %}
+
+{% block content %}
+
+<style>
+.card-box{
+    display:flex;
+    background:white;
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+    gap:36px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.card-box img{
+    width:380px;
+    height:380px;
+    border-radius:16px;
+    object-fit:cover;
+    background:#f3f3f3;
+}
+
+.info{
+    flex:1;
+    font-size:15px;
+    color:#222;
+    line-height:1.6;
+}
+
+.inline-tags span{
+    background:#f5f2e6;
+    padding:5px 12px;
+    border-radius:14px;
+    font-size:12px;
+    margin-right:6px;
+    font-weight:600;
+}
+
+.row-icon{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    margin-top:6px;
+}
+
+.row-icon i{
+    color:#d8841a;
+    font-size:17px;
+}
+
+.user-cards{
+    display:flex;
+    gap:40px;
+    margin-top:26px;
+}
+
+.user-box{
+    flex:1;
+    background:#fafafa;
+    padding:18px;
+    border-radius:14px;
+    border:1px solid #eee;
+    
+}
+
+.user-box h4{
+    margin:0 0 10px 0;
+    color:#cc8400;
+}
+
+.actions{
+    display:flex;
+    gap:14px;
+    margin-top:30px;
+}
+
+.actions a{
+    padding:12px 28px;
+    border-radius:12px;
+    font-weight​​ // safe
+    font-weight:700;
+    text-decoration:none;
+    color:white;
+}
+
+.approve{ background:#049638; }
+.reject{ background:#d81515; }
+</style>
+
+<div class="card-box" style="flex-direction:column;">
+
+    <!-- ================= ROW 1 ================= -->
+    <div style="display:flex; gap:36px;">
+        <div>
+    <!-- PET IMAGE -->
+        {% if pet_kind == "lost" and pet.pet_image %}
+            <img src="{{ pet.pet_image.url }}">
+        {% elif pet.image %}
+            <img src="{{ pet.image.url }}">
+        {% else %}
+            <img src="https://via.placeholder.com/380x380?text=No+Image">
+        {% endif %}
+    </div>
+    
+
+
+    <div class="info">
+
+        <!-- PET TITLE -->
+        <h2>
+            {% if pet_kind == "lost" %}
+                {{ pet.pet_type }}
+            {% else %}
+                {{ pet.species }}
+            {% endif %}
+            {% if pet.breed %} ({{ pet.breed }}){% endif %}
+        </h2>
+
+        <p><b>Pet ID:</b> {{ pet.id }}</p>
+
+        <div class="inline-tags">
+            <span>Age: {{ pet.age|default:"-" }}</span>
+            <span>{{ pet.gender|default:"-" }}</span>
+            <span>Weight: {{ pet.weight|default:"-" }}</span>
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-heart-pulse"></i>
+            <b>Health:</b> {{ pet.health_status|default:"Not specified" }}
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-geo-alt"></i>
+            {{ pet.location }}
+            {% if pet.location_url %}
+                • <a href="{{ pet.location_url }}" target="_blank">Map</a>
+            {% endif %}
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-calendar-event"></i>
+            {% if pet_kind == "lost" %}
+                <b>Lost on:</b> {{ pet.lost_date }}
+            {% else %}
+                <b>Found on:</b> {{ pet.found_date }}
+            {% endif %}
+        </div>
+
+        <div class="row-icon">
+            <i class="bi bi-clock"></i>
+            <b>Reported on:</b>
+            {% if pet_kind == "lost" %}
+                {{ pet.reported_on|date:"d M Y, h:i A" }}
+            {% else %}
+                {{ pet.created_on|date:"d M Y, h:i A" }}
+            {% endif %}
+        </div>
+
+        <hr style="margin:22px 0;">
+
+        <p><b>Description:</b><br>
+            {{ pet.description|default:"No description provided." }}
+        </p>
+        </div>  <!-- END info -->
+    </div>
+        <!-- USER DETAILS -->
+         <div style="display:flex; gap:36px; margin-top:26px;">
+
+        <!-- MESSAGE -->
+        {% if req.message %}
+        <div style="
+            flex:0 0 35%;
+            background:#fff7e1;
+            padding:16px;
+            border-radius:14px;
+            border-left:6px solid #ffa500;
+            max-height:160px;
+            overflow-y:auto;
+        ">
+            <h4 style="margin:0 0 8px; color:#cc8400;">
+                📨 Message from Requester
+            </h4>
+            <p style="margin:0; line-height:1.6;font-size:14px;">
+                {{ req.message|linebreaks }}
+            </p>
+        </div>
+        {% endif %}
+        <div class="user-cards">
+
+            <!-- REQUESTER -->
+            <div class="user-box" style="flex:0 0 60%;">
+                <h4>Requester (Owner)</h4>
+
+                {% if pet.owner_name %}
+                    {{ pet.owner_name }}
+                {% elif requester.first_name %}
+                    {{ requester.first_name }} {{ requester.last_name }}
+                {% else %}
+                    {{ requester.username }}
+                {% endif %}
+
+                {% if pet.contact_number %}
+                    <br>📞 {{ pet.contact_number }}
+                {% elif requester.userprofile.phone %}
+                    <br>📞 {{ requester.userprofile.phone }}
+                {% else %}
+                    <br>📞 Not provided
+                {% endif %}
+
+                <br>📧 {{ pet.contact_email|default:requester.email }}
+                <br><small>Joined: {{ requester.date_joined|date:"M Y" }}</small>
+            </div>
+
+            <!-- REPORTER -->
+            <div class="user-box" style="flex:0 0 60%;">
+                <h4>Reporter (Finder)</h4>
+
+                {% if reporter %}
+                    {{ reporter.username }}<br>
+                    📞 {{ reporter.userprofile.phone|default:"Not provided" }}<br>
+                    📧 {{ reporter.email }}<br>
+                    <small>Joined: {{ reporter.date_joined|date:"M Y" }}</small>
+                {% else %}
+                    Not available
+                {% endif %}
+            </div>
+
+        </div>
+</div>
+        <!-- ACTION BUTTONS -->
+        <div class="actions">
+            <a href="{% url 'approve_chat_request' req.id %}" class="approve">
+                Approve
+            </a>
+
+            <a href="{% url 'reject_chat_request' req.id %}"
+               class="reject"
+               onclick="return confirm('Are you sure you want to reject this request?');">
+                Reject
+            </a>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

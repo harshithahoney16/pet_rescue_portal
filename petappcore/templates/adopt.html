@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Adopt a Pet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#fff5e8] px-6 py-10">
+
+    <!-- Heading -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-[#d48806] drop-shadow">
+            🐾 Welcome to Adopt a Pet
+        </h1>
+        <p class="text-lg text-gray-700 mt-2">
+            Choose your favorite pet from the list below 🧡
+        </p>
+    </div>
+
+    <!-- Animals List -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
+
+        {% for animal in animals %}
+        <div class="bg-white p-6 rounded-2xl shadow-lg border-2 border-[#ffb733] 
+                    hover:shadow-xl hover:scale-105 transition cursor-pointer text-center">
+
+            <div class="text-3xl mb-3">🐾</div>
+
+            <h2 class="text-xl font-semibold text-[#b57400]">
+                {{ animal }}
+            </h2>
+        </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>
